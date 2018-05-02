@@ -23,8 +23,9 @@ function actualizador {
 #!/bin/bash
 
 ## Parámetros
-usuario=${actualizador_usuario}
+usuario='${actualizador_usuario}'
 password='${actualizador_contrasenya}'
+
 EOS
 "
 
@@ -33,15 +34,16 @@ EOS
 	done
 
 	sudo bash -c "cat <<EOS >> /usr/local/bin/actualizador.sh
+
 url='https://www.ovh.com/nic/update?system=dyndns'
 
 ## Log (1=true, 0=false)
 log=1
-log_file=/var/log/dynhost.log
+log_file='/var/log/dynhost.log'
 
 ## Actualizar IP
-if [ \\\$log = '0' ]; then
-  log_file=/dev/null
+if [ \"\\\$log\" = '0' ]; then
+  log_file='/dev/null'
 fi
 for host in \"\\\${hosts[@]}\"; do
   echo \"\\\`date\\\`, \\\$host: \\\`curl --user \\\"\\\$usuario:\\\$password\\\" \\\"\\\${url}&hostname=\\\${host}\\\"\\\`\" >> \\\$log_file
@@ -53,8 +55,6 @@ EOS
 	sudo chmod u+x /usr/local/bin/actualizador.sh
 
 	echo 'Ejecutando el script por primera vez...'
-
-	sudo chmod 777 /usr/local/bin/actualizador.sh
 
 	sudo touch /var/log/dynhost.log
 
@@ -69,8 +69,8 @@ EOS
 	cat <<EOS >> crontab.tmp
 
 # Actualización de la IP dinámica
-@reboot                                                         /usr/local/bin/actualizador.sh
-0,30                    *               *       *       *       /usr/local/bin/actualizador.sh
+@reboot								/usr/local/bin/actualizador.sh
+0,30			*		*	*	*	/usr/local/bin/actualizador.sh
 
 EOS
 
@@ -100,11 +100,13 @@ unset FTP_PASSWORD
 EOS
 "
 
+	sudo chmod u+x /usr/local/bin/backup.sh
+
 	sudo crontab -l > crontab.tmp
 
 	sudo cat <<EOS >> crontab.tmp
 # Copia de seguridad semanal
-0                       5               *       *       7       /usr/local/bin/backup.sh
+0			5		*	*	7	/usr/local/bin/backup.sh
 EOS
 
 	sudo crontab crontab.tmp
@@ -178,7 +180,7 @@ function instalar_crontabs {
 59			23		*	*	*	/usr/local/bin/informe.sh
 
 # Aviso en caso de reinicio
-@reboot								/usr/local/bin/reinicio.sh
+@reboot							/usr/local/bin/reinicio.sh
 EOS
 
 		crontab crontab.tmp
@@ -188,7 +190,7 @@ EOS
 		cat <<EOS >> crontab.tmp
 
 # Registro cada media hora de las temperaturas del sistema
-0,30                    *               *       *       *       echo "\`date\`, \`uptime -p\`, \`/opt/vc/bin/vcgencmd measure_temp\`, \`cat /proc/loadavg\`" >> /var/log/health.log
+0,30			*		*	*	*	echo "\`date\`, \`uptime -p\`, \`/opt/vc/bin/vcgencmd measure_temp\`, \`cat /proc/loadavg\`" >> /var/log/health.log
 EOS
 
 		sudo crontab crontab.tmp
@@ -389,7 +391,7 @@ fi
 if [ $sistema = 0 ]; then
 	echo 'Instalando mailers...'
 
-	sudo bash -c "cat <<EOS > /usr/local/bin/informe.sh
+	sudo bash -c "cat <<EEOS > /usr/local/bin/informe.sh
 #!/usr/bin/env bash
 
 cat <<EOS | mutt -s \"\\\$( whoami )@\\\$(uname -n): informe diario\" veltys@gmail.com
@@ -400,13 +402,15 @@ Informe diario de \\\$(uname -n), correspondiente al \\\$( date ):
 EOS
 
 truncate -s 0 /var/log/health.log
-EOS
+EEOS
 "
 
 	sudo chmod a+x /usr/local/bin/informe.sh
 
-	sudo bash -c "cat <<EOS > /usr/local/bin/reinicio.sh
+	sudo bash -c "cat <<EEOS > /usr/local/bin/reinicio.sh
 #!/usr/bin/env bash
+
+sleep 60
 
 cat <<EOS | mutt -s \"\\\$( whoami )@\\\$(uname -n): informe especial\" veltys@gmail.com
 Informe especial de \\\$(uname -n), generado el \\\$( date ):
@@ -414,6 +418,7 @@ Informe especial de \\\$(uname -n), generado el \\\$( date ):
 \\\$(uname -n) se ha reiniciado. Si no ha sido intencional este reinicio, es posible que haya habido un corte de luz.
 
 EOS
+EEOS
 "
 
 	sudo chmod a+x /usr/local/bin/reinicio.sh
