@@ -45,6 +45,7 @@ log_file='/var/log/dynhost.log'
 if [ \"\\\$log\" = '0' ]; then
   log_file='/dev/null'
 fi
+
 for host in \"\\\${hosts[@]}\"; do
   echo \"\\\`date\\\`, \\\$host: \\\`curl --user \\\"\\\$usuario:\\\$password\\\" \\\"\\\${url}&hostname=\\\${host}\\\"\\\`\" >> \\\$log_file
 done
@@ -443,6 +444,9 @@ mv authorized_keys ~/.ssh/
 echo 'Estableciendo personalizaciones del entorno...'
 
 sed -i -e 's/#force_color_prompt=yes/force_color_prompt=yes/g' ~/.bashrc
+sed -i -e "s/#alias dir='dir --color=auto'/alias dir='dir --color=auto'/g" ~/.bashrc
+sed -i -e "s/#alias vdir='vdir --color=auto'/alias vdir='vdir --color=auto'/g" ~/.bashrc
+
 sed -i -e 's/#export GCC_COLORS/export GCC_COLORS=/g' ~/.bashrc
 sed -i -e "s/#alias ll='ls -l'/alias ll='ls -l'/g" ~/.bashrc
 sed -i -e "s/#alias la='ls -A'/alias la='ls -A'/g" ~/.bashrc
