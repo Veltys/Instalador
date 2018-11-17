@@ -768,3 +768,11 @@ hdmi_blanking=1
 EOS
 "
 fi
+
+
+## Adecuación de las locales
+if [ $sistema != 0 ]; then
+	sudo apt install manpages-es manpages-es-extra
+	sudo dpkg-reconfigure locales
+	export LANG=es_ES.UTF-8
+fi
