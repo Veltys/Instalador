@@ -300,6 +300,10 @@ if [ $sistema = 0 ]; then
 	sudo ${gestorPaquetes} purge dphys-swapfile -y
 fi
 
+echo 'Haciendo limpieza...'
+
+sudo apt autoremove -y
+
 
 ## Scripting 1: actualizador.sh
 echo -n '¿Se asignará un DNS dinámico? [S/n]: '
