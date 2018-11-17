@@ -321,7 +321,7 @@ copia_de_seguridad=${copia_de_seguridad,,}
 if [ $copia_de_seguridad != 'n' ]; then
 	echo 'Instalando el paquete "duplicity", necesario para las copias de seguridad...'
 
-	sudo ${gestorPaquetes} install duplicity -y
+	sudo ${gestorPaquetes} install duplicity lftp -y
 
 	echo 'Configurando parámetros de la copia de seguridad...'
 
