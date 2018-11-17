@@ -200,29 +200,36 @@ EOS
 }
 
 
+## Bienvenida
+echo 'Bienvenido al instalador interactivo de máquinas Linux'
 
 ## Configuración
-echo -n '¿Qué se va a instalar? [(R)aspberry|(V)PS|Otro]: '
+echo -n '¿Qué se va a instalar? [(R)aspberry Pi|(V)PS|Otro]: '
 read sistema
+
+echo -n 'Ok. Instalaremos un'
 
 sistema=${sistema:0:1}
 sistema=${sistema,,}
 
 case $sistema in
 	'r') sistema=0
+		 echo 'a Raspberry Pi'
 
 		 programas=('cifs-utils' 'gparted' 'ntp' 'pptp-linux' 'sshfs');;
 
 	'v') sistema=1
+		 echo ' servidor VPS'
 
 		 programas=('cifs-utils'                 'pptp-linux' 'sshfs');;
 
 	*  ) sistema=2
+		 echo 'otro tipo de sistema'
 
 		 programas=('cifs-utils' 'gparted' 'ntp' 'pptp-linux' 'sshfs');;
 esac
 
-echo -n 'Nombre del sistema: '
+echo -n 'Nombre propio (no DNS) del sistema: '
 read nombre_sistema
 
 
