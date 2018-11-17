@@ -138,7 +138,7 @@ function ssh_inverso {
 	sudo bash -c "cat <<EOS > /usr/local/bin/tunel-${nombre_sistema}-Ultra.sh
 #!/bin/bash
 
-autossh -M 5122 -f -C -i /home/pi/.ssh/${nombre_sistema}.pem -o ServerAliveInterval=20 -N -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@ultra.ordenadores.veltys.es -p 22008
+autossh -M 5122 -f -C -i /home/pi/.ssh/${nombre_sistema}.pem -o ServerAliveInterval=20 -N -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@ultra.ordenadores.veltys.net -p 22008
 
 EOS
 "
@@ -146,7 +146,7 @@ EOS
 	sudo bash -c "cat <<EOS > /usr/local/bin/conexion-${nombre_sistema}-Ultra.sh
 #!/bin/bash
 
-ssh -C -i /home/pi/.ssh/${nombre_sistema}.pem -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@ultra.ordenadores.veltys.es -p 22008
+ssh -C -i /home/pi/.ssh/${nombre_sistema}.pem -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@ultra.ordenadores.veltys.net -p 22008
 
 EOS
 "
