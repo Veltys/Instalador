@@ -53,7 +53,7 @@ done
 EOS
 "
 
-	sudo chmod u+x /usr/local/bin/actualizador.sh
+	sudo chmod a+x /usr/local/bin/actualizador.sh
 
 	echo 'Ejecutando el script por primera vez...'
 
