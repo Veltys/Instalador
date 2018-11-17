@@ -243,9 +243,17 @@ if [ $sistema != 0 ] && [ $sistema != 1 ]; then
 fi
 
 if [ $sistema = 0 ] || [ $sistema = 1 ] || [ $contrasenya != 'n' ]; then
-	passwd
+	quiensoy=$(whoami)
 
-	sudo passwd
+	echo "Cambiando la contraseña del usuario $quiensoy"
+ 
+	sudo passwd $quiensoy
+
+	if [ "$quiensoy" != 'root' ]; then
+		echo 'Cambiando la contraseña del usuario root'
+
+		sudo passwd
+	fi
 fi
 
 
