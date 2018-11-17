@@ -758,10 +758,13 @@ instalar_crontabs
 # sudo nano /etc/ppp/ip-up.d/000updateroutingtable
 # sudo chmod a+x /etc/ppp/ip-up.d/000updateroutingtable
 
+
 ## Arreglo del ahorro de energía del HDMI
-sudo bash -c "cat <<EOS >> /boot/config.txt
+if [ $sistema = 0 ]; then
+	sudo bash -c "cat <<EOS >> /boot/config.txt
 
 # Enable idle HDMI poweroff
 hdmi_blanking=1
 EOS
 "
+fi
