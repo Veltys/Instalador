@@ -776,3 +776,21 @@ if [ $sistema != 0 ]; then
 	sudo dpkg-reconfigure locales
 	export LANG=es_ES.UTF-8
 fi
+
+
+## Instalación del maravilloso KDE
+if [ $sistema != 0 ]; then
+	if [ $OS = 'Debian' ]; then
+		echo -n '¿Instalar el escritorio KDE? [s/N]: '
+		read kde
+
+		kde=${kde:0:1}
+		kde=${kde,,}
+
+		if [ $kde = 's' ]; then
+			echo 'Instalando KDE...'
+
+			sudo apt install kde-plasma-desktop kde-l10n-es
+		fi
+	fi
+fi
