@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 
 ## Variables
 gestorPaquetes='apt'
@@ -281,6 +281,204 @@ done
 
 sudo ${gestorPaquetes} install ${programas_a_instalar} -y
 
+
+## Configuración del MOTD
+echo 'Configurando el MOTD'
+
+sudo bash -c "cat <<EOS > /etc/update-motd.d/60-weather
+#!/bin/sh
+
+export TERM=xterm-256color
+
+curl es.wttr.in/?0
+EOS
+"
+
+sudo chmod a+x /etc/update-motd.d/60-weather
+
+if [ $sistema = 0 ]; then
+	sudo bash -c "cat <<EOS > /etc/update-motd.d/50-custom-motd
+#!/bin/bash
+
+export TERM=xterm-256color
+
+let upSeconds=\"\\\$(/usr/bin/cut -d. -f1 /proc/uptime)\"
+let secs=\\\$((\\\${upSeconds}%60))
+let mins=\\\$((\\\${upSeconds}/60%60))
+let hours=\\\$((\\\${upSeconds}/3600%24))
+let days=\\\$((\\\${upSeconds}/86400))
+UPTIME=\\\`printf \"%d días, %02dh%02dm%02ds\" \"\\\$days\" \"\\\$hours\" \"\\\$mins\" \"\\\$secs\"\\\`
+
+MEMFREE=\\\`cat /proc/meminfo | grep MemFree | awk {'print \\\$2'}\\\`
+MEMTOTAL=\\\`cat /proc/meminfo | grep MemTotal | awk {'print \\\$2'}\\\`
+
+SDUSED=\\\`df -h | grep 'dev/root' | awk '{print \\\$3}' | xargs\\\`
+SDAVAIL=\\\`df -h | grep 'dev/root' | awk '{print \\\$4}' | xargs\\\`
+
+# get the load averages
+read one five fifteen rest < /proc/loadavg
+
+DARKGREY=\"\\\$(tput sgr0 ; tput bold ; tput setaf 0)\"
+RED=\"\\\$(tput sgr0 ; tput setaf 1)\"
+GREEN=\"\\\$(tput sgr0 ; tput setaf 2)\"
+BLUE=\"\\\$(tput sgr0 ; tput setaf 4)\"
+NC=\"\\\$(tput sgr0)\" # No Color
+
+echo \"\\\${GREEN}
+   .~~.   .~~.    \\\`date +\"%A, %e %B %Y, %r\"\\\`
+  '. \ ' ' / .'   \\\`uname -srmo\\\`\\\${RED}
+   .~ .~~~..~.
+  : .~.'~'.~. :   \\\${DARKGREY}Tiempo en línea..........: \\\${BLUE}\\\${UPTIME}\\\${RED}
+ ~ (   ) (   ) ~  \\\${DARKGREY}Memoria..................: \\\${BLUE}\\\${MEMFREE}kB (libre) / \\\${MEMTOTAL}kB (total)\\\${RED}
+( : '~'.~.'~' : ) \\\${DARKGREY}Uso de disco.............: \\\${BLUE}${SDUSED} (usado) / ${SDAVAIL} (libre)\\\${RED}
+ ~ .~ (   ) ~. ~  \\\${DARKGREY}Cargas de trabajo........: \\\${BLUE}\\\${one}, \\\${five}, \\\${fifteen} (1, 5, 15 min)\\\${RED}
+  (  : '~' :  )   \\\${DARKGREY}Procesos en ejecución....: \\\${BLUE}\\\`ps ax | wc -l | tr -d \" \"\\\`\\\${RED}
+   '~ .~~~. ~'    \\\${DARKGREY}Direcciones IP...........: \\\${BLUE}\\\`ip a | grep glo | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\` y \\\`wget -q -O - http://icanhazip.com/ | tail\\\`\\\${RED}
+       '~'        \\\${DARKGREY}Temperatura del sistema..: \\\${BLUE}\\\`/opt/vc/bin/vcgencmd measure_temp | sed -r -e \"s/^temp=([0-9]*)\\\.([0-9])'C$/\1,\2 C/\"\\\`\\\${NC}
+\"
+EOS
+"
+
+	sudo chmod a+x /etc/update-motd.d/50-custom-motd
+elif [ $sistema = 1 ]; then
+	OS=$(lsb_release -si)
+
+	if [ $OS = 'Ubuntu' ]; then
+		sudo ${gestorPaquetes} install landscape-common update-notifier-common -y
+
+		sudo /usr/lib/update-notifier/update-motd-updates-available --force
+	elif [ $OS = 'Debian' ]; then
+		sudo apt install figlet
+
+		wget ***REMOVED***
+
+		sudo apt install ./update-notifier-common_0.99.3debian11_all.deb -y
+
+		sudo /usr/lib/update-notifier/update-motd-updates-available --force
+
+		sudo bash -c "cat <<EOS > /etc/update-motd.d/00-header
+#!/bin/sh
+#
+#    00-header - create the header of the MOTD
+#    Copyright (c) 2013 Nick Charlton
+#    Copyright (c) 2009-2010 Canonical Ltd.
+#
+#    Authors: Nick Charlton <hello@nickcharlton.net>
+#             Dustin Kirkland <kirkland@canonical.com>
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+[ -r /etc/lsb-release ] && . /etc/lsb-release
+
+if [ -z \"\\\$DISTRIB_DESCRIPTION\" ] && [ -x /usr/bin/lsb_release ]; then
+        # Fall back to using the very slow lsb_release utility
+        DISTRIB_DESCRIPTION=\\\$(lsb_release -s -d)
+fi
+
+figlet \\\$(hostname)
+printf \"\\\n\"
+
+printf \"Welcome to %s (%s).\\\n\" \"\\\$DISTRIB_DESCRIPTION\" \"\\\$(uname -r)\"
+printf \"\\\n\"
+EOS
+"
+
+		sudo bash -c "cat <<EOS > /etc/update-motd.d/10-sysinfo
+#!/bin/bash
+#
+#    10-sysinfo - generate the system information
+#    Copyright (c) 2013 Nick Charlton
+#
+#    Authors: Nick Charlton <hello@nickcharlton.net>
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+date=\\\`date\\\`
+load=\\\`cat /proc/loadavg | awk '{print \\\$1}'\\\`
+root_usage=\\\`df -h / | awk '/\\\// {print \\\$(NF-1)}'\\\`
+memory_usage=\\\`free -m | awk '/Mem:/ { total=\\\$2 } /buffers\/cache/ { used=\\\$3 } END { printf(\"%3.1f%%\", used/total*100)}'\\\`
+swap_usage=\\\`free -m | awk '/Swap/ { printf(\"%3.1f%%\", \"exit !$2;$3/$2*100\") }'\\\`
+users=\\\`users | wc -w\\\`
+time=\\\`uptime | grep -ohe 'up .*' | sed 's/,/\\\ hours/g' | awk '{ printf \\\$2\" \"\\\$3 }'\\\`
+processes=\\\`ps aux | wc -l\\\`
+ip=\\\`ifconfig \\\$(route | grep default | awk '{ print $8 }') | grep \"inet \" | awk '{print \\\$2}'\\\`
+
+echo \"System information as of: \\\$date\"
+echo
+printf \"System load:\t%s\tIP Address:\t%s\n\" \\\$load \\\$ip
+printf \"Memory usage:\t%s\tSystem uptime:\t%s\n\" \\\$memory_usage \"\\\$time\"
+printf \"Usage on /:\t%s\tSwap usage:\t%s\n\" \\\$root_usage \\\$swap_usage
+printf \"Local Users:\t%s\tProcesses:\t%s\n\" \\\$users \\\$processes
+echo
+EOS
+"
+
+		sudo bash -c "cat <<EOS > /etc/update-motd.d/90-updates-available
+#!/bin/sh
+
+stamp=\"/var/lib/update-notifier/updates-available\"
+
+[ ! -r \"\\\$stamp\" ] || cat \"\\\$stamp\"
+EOS
+"
+
+		sudo bash -c "cat <<EOS > /etc/update-motd.d/90-footer
+#!/bin/sh
+#
+#    90-footer - write the admin's footer to the MOTD
+#    Copyright (c) 2013 Nick Charlton
+#    Copyright (c) 2009-2010 Canonical Ltd.
+#
+#    Authors: Nick Charlton <hello@nickcharlton.net>
+#             Dustin Kirkland <kirkland@canonical.com>
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ 
+[ -f /etc/motd.tail ] && cat /etc/motd.tail || true
+EOS
+"
+
+		sudo rm /etc/update-motd.d/10-uname
+
+		sudo chmod a+x /etc/update-motd.d/*
+	fi
+fi
 
 ## Configuración del servidor de hora
 if [[ $programas_a_instalar = *'ntp'* ]]; then
