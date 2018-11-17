@@ -221,7 +221,7 @@ case $sistema in
 	'v') sistema=1
 		 echo ' servidor VPS'
 
-		 programas=('cifs-utils'                 'pptp-linux' 'sshfs');;
+		 programas=('cifs-utils'           'ntp' 'pptp-linux' 'sshfs');;
 
 	*  ) sistema=2
 		 echo 'otro tipo de sistema'
@@ -257,7 +257,7 @@ sudo ${gestorPaquetes} upgrade -y
 
 echo 'Instalando paquetes...'
 
-programas_a_instalar='elinks htop nano'
+programas_a_instalar='elinks htop nano dnsutils'
 
 for (( i = 0; i<${#programas[@]}; i++ )); do
 	echo -n "¿Instalar el paquete \"${programas[$i]}\"? [S/n]: "
@@ -278,7 +278,7 @@ sudo ${gestorPaquetes} install ${programas_a_instalar} -y
 if [[ $programas_a_instalar = *'ntp'* ]]; then
 	echo 'Configurando servidor de hora español (hora.roa.es)...'
 
-	sed '/pool 0.debian.pool.ntp.org iburst/i server hora.roa.es' /etc/ntp.conf | sudo tee /etc/ntp.conf > /dev/null
+	sed '/^pool 0.[a-z]*.pool.ntp.org iburst$/i server hora.roa.es' /etc/ntp.conf | sudo tee /etc/ntp.conf > /dev/null
 fi
 
 
@@ -438,11 +438,9 @@ echo 'Obteniendo las claves públicas para el servidor SSH...'
 
 wget --user=***REMOVED*** --password=***REMOVED*** ***REMOVED***
 
-if [ $sistema = 0 ]; then
-	mkdir ~/.ssh
+mkdir ~/.ssh
 
-	chmod 700 ~/.ssh
-fi
+chmod 700 ~/.ssh
 
 mv authorized_keys ~/.ssh/
 
