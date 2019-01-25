@@ -158,7 +158,7 @@ EOS
 	ssh_inverso_clave=${ssh_inverso_clave,,}
 
 	if [ $ssh_inverso_clave != 'n' ]; then
-		ssh-keygen -b 2048 -t rsa -f /home/pi/.ssh/${sistema}.pem	
+		ssh-keygen -b 2048 -t rsa -f /home/pi/.ssh/${sistema}.pem
 		mv /home/pi/.ssh/${sistema}.pem.pub /home/pi/.ssh/${sistema}.pub
 
 		echo 'No olvide copiar la clave pública al servidor SSH'
