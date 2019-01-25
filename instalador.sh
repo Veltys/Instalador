@@ -790,7 +790,7 @@ if [ $sistema != 0 ]; then
 		if [ $kde = 's' ]; then
 			echo 'Instalando KDE...'
 
-			sudo apt install kde-plasma-desktop kde-l10n-es
+			sudo apt install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen
 		fi
 	fi
 fi
