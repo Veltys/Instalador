@@ -687,6 +687,7 @@ fi
 cat <<EOS >> ~/.bash_aliases
 alias su='su -p'
 alias ping='ping -c 4'
+alias traceroute='traceroute -I'
 EOS
 
 if [ $sistema = 0 ]; then
