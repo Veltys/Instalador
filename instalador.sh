@@ -582,27 +582,27 @@ fi
 
 
 ## Scripting 5: contador
-echo -n '¿Se debe instalar el script del contador LinuxCounter? [S/n]: '
-read contador
+# echo -n '¿Se debe instalar el script del contador LinuxCounter? [S/n]: '
+# read contador
 
-contador=${contador:0:1}
-contador=${contador,,}
+# contador=${contador:0:1}
+# contador=${contador,,}
 
-if [ $contador != 'n' ]; then
-	echo 'Instalando el script del contador...'
+# if [ $contador != 'n' ]; then
+# 	echo 'Instalando el script del contador...'
 
-	wget https://github.com/christinloehner/linuxcounter-update-examples/raw/master/_official/lico-update.sh
+# 	wget https://github.com/christinloehner/linuxcounter-update-examples/raw/master/_official/lico-update.sh
 
-	chmod +x lico-update.sh
+# 	chmod +x lico-update.sh
 
-	sudo mv lico-update.sh /usr/local/bin/lico-update.sh
+# 	sudo mv lico-update.sh /usr/local/bin/lico-update.sh
 
-	echo 'Configurando parámetros del script del contador...'
+# 	echo 'Configurando parámetros del script del contador...'
 
-	/usr/local/bin/lico-update.sh -i
-	/usr/local/bin/lico-update.sh -m
-	/usr/local/bin/lico-update.sh -ci
-fi
+# 	/usr/local/bin/lico-update.sh -i
+# 	/usr/local/bin/lico-update.sh -m
+# 	/usr/local/bin/lico-update.sh -ci
+# fi
 
 
 ## Scripting 6: mailers
