@@ -265,7 +265,7 @@ sudo ${gestorPaquetes} upgrade -y
 
 echo 'Instalando paquetes...'
 
-programas_a_instalar='elinks htop nano dnsutils'
+programas_a_instalar='elinks htop nano dnsutils mutt gpgsm speedtest-cli'
 
 for (( i = 0; i<${#programas[@]}; i++ )); do
 	echo -n "¿Instalar el paquete \"${programas[$i]}\"? [S/n]: "
