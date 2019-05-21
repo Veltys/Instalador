@@ -181,7 +181,7 @@ function instalar_crontabs {
 59			23		*	*	*	/usr/local/bin/informe.sh
 
 # Aviso en caso de reinicio
-@reboot							/usr/local/bin/reinicio.sh
+@reboot								/usr/local/bin/reinicio.sh
 EOS
 
 		crontab crontab.tmp
@@ -207,19 +207,19 @@ echo 'Bienvenido al instalador interactivo de máquinas Linux'
 echo -n '¿Qué se va a instalar? [(R)aspberry Pi|(V)PS|Otro]: '
 read sistema
 
-echo -n 'Ok. Instalaremos un'
+echo -n 'Ok. Instalaremos '
 
 sistema=${sistema:0:1}
 sistema=${sistema,,}
 
 case $sistema in
 	'r') sistema=0
-		 echo 'a Raspberry Pi'
+		 echo 'una Raspberry Pi'
 
 		 programas=('cifs-utils' 'gparted' 'ntp' 'pptp-linux' 'sshfs');;
 
 	'v') sistema=1
-		 echo ' servidor VPS'
+		 echo 'un servidor VPS'
 
 		 programas=('cifs-utils'           'ntp' 'pptp-linux' 'sshfs');;
 
