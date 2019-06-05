@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian
 # Author        : Veltys
-# Date          : 21-05-2019
-# Version       : 1.3.3
+# Date          : 05-06-2019
+# Version       : 1.3.4
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -339,7 +339,7 @@ echo \"\\\${GREEN}
    .~ .~~~..~.
   : .~.'~'.~. :   \\\${DARKGREY}Tiempo en línea..........: \\\${BLUE}\\\${UPTIME}\\\${RED}
  ~ (   ) (   ) ~  \\\${DARKGREY}Memoria..................: \\\${BLUE}\\\${MEMFREE}kB (libre) / \\\${MEMTOTAL}kB (total)\\\${RED}
-( : '~'.~.'~' : ) \\\${DARKGREY}Uso de disco.............: \\\${BLUE}${SDUSED} (usado) / ${SDAVAIL} (libre)\\\${RED}
+( : '~'.~.'~' : ) \\\${DARKGREY}Uso de disco.............: \\\${BLUE}\\\${SDUSED} (usado) / \\\${SDAVAIL} (libre)\\\${RED}
  ~ .~ (   ) ~. ~  \\\${DARKGREY}Cargas de trabajo........: \\\${BLUE}\\\${one}, \\\${five}, \\\${fifteen} (1, 5, 15 min)\\\${RED}
   (  : '~' :  )   \\\${DARKGREY}Procesos en ejecución....: \\\${BLUE}\\\`ps ax | wc -l | tr -d \" \"\\\`\\\${RED}
    '~ .~~~. ~'    \\\${DARKGREY}Direcciones IP...........: \\\${BLUE}\\\`ip a | grep glo | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\` y \\\`wget -q -O - http://icanhazip.com/ | tail\\\`\\\${RED}
