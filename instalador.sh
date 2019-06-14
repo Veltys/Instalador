@@ -634,6 +634,10 @@ EEOS
 
 	sudo chmod a+x /usr/local/bin/informe.sh
 
+	sudo touch /var/log/health.log
+
+	sudo chmod 666 /var/log/health.log
+
 	sudo bash -c "cat <<EEOS > /usr/local/bin/reinicio.sh
 #!/usr/bin/env bash
 
