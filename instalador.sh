@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 15-06-2019
-# Version       : 2.0.0
+# Version       : 2.0.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -171,6 +171,7 @@ EOS
 		elif [ $OS = 'Debian' ]; then
 			sudo apt install figlet
 
+			# TODO: Quitar los ***REMOVED***
 			wget ***REMOVED***
 
 			sudo apt install ./update-notifier-common_0.99.3debian11_all.deb -y
@@ -448,6 +449,7 @@ function configurador_backups {
 		echo -n 'Introduzca la contraseña del FTP de copias de seguridad: '
 		read contrasenya_ftp
 
+		# TODO: Quitar los ***REMOVED***
 		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
 #!/bin/bash
 
@@ -724,6 +726,7 @@ password=${contrasenya_smb}
 EOS
 "
 
+		# TODO: Quitar los ***REMOVED***
 		sudo bash -c "cat <<EOS >> /etc/fstab
 ***REMOVED***
 ***REMOVED***
