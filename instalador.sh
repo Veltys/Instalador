@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 23-07-2019
-# Version       : 2.1.1
+# Version       : 2.2.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -439,16 +439,21 @@ function configurador_backups {
 			*) backups_tipo_sistema='Otros' ;;
 		esac
 
-		echo -n 'Introduzca la contraseña del FTP de copias de seguridad: '
-		read contrasenya_ftp
+		echo -n 'Introduzca la dirección del servidor FTP de copias de seguridad: '
+		read backups_servidor_ftp
 
-		# TODO: Quitar los ***REMOVED***
+		echo -n 'Introduzca el usuario del servidor FTP de copias de seguridad: '
+		read backups_usuario_ftp
+
+		echo -n 'Introduzca la contraseña del servidor FTP de copias de seguridad: '
+		read backups_contrasenya_ftp
+
 		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
 #!/bin/bash
 
-export FTP_PASSWORD=\"${contrasenya_ftp}=\"
+export FTP_PASSWORD=\"${backups_contrasenya_ftp}=\"
 
-duplicity --no-encryption --full-if-older-than 1M --exclude /mnt --exclude /media --exclude /tmp --exclude /proc --exclude /sys --exclude /var/lib/lxcfs / ftp://***REMOVED***@***REMOVED***/${backup_tipo_sistema}/${nombre_sistema} >> /var/log/duplicity.log
+duplicity --no-encryption --full-if-older-than 1M --exclude /mnt --exclude /media --exclude /tmp --exclude /proc --exclude /sys --exclude /var/lib/lxcfs / ftp://${backups_usuario_ftp}@${backups_servidor_ftp}/${backups_tipo_sistema}/${general_nombre_sistema} >> /var/log/duplicity.log
 
 unset FTP_PASSWORD
 
