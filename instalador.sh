@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 23-07-2019
-# Version       : 2.4.1
+# Version       : 2.5.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -27,17 +27,17 @@ function configurador_general {
 		'r') general_sistema=0
 			 echo 'una Raspberry Pi'
 
-			 programas=('cifs-utils' 'gparted' 'ntp' 'pptp-linux' 'sshfs');;
+			 programas=('cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
 
 		'v') general_sistema=1
 			 echo 'un servidor VPS'
 
-			 programas=('cifs-utils'           'ntp' 'pptp-linux' 'sshfs');;
+			 programas=('cifs-utils' 'elinks'           'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
 
 		*  ) general_sistema=2
 			 echo 'otro tipo de sistema'
 
-			 programas=('cifs-utils' 'gparted' 'ntp' 'pptp-linux' 'sshfs');;
+			 programas=('cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
 	esac
 
 	echo -n 'Nombre propio (no DNS) del sistema: '
@@ -84,7 +84,7 @@ function actualizador_sistema {
 function instalador_paquetes {
 	echo 'Instalando paquetes...'
 
-	programas_a_instalar='elinks htop nano dnsutils mutt gpgsm speedtest-cli'
+	programas_a_instalar='dnsutils htop nano'
 
 	for (( i = 0; i<${#programas[@]}; i++ )); do
 		echo -n "¿Instalar el paquete \"${programas[$i]}\"? [S/n]: "
@@ -581,10 +581,13 @@ function configurador_contador_linux {
 
 ## Funciones 13: instalador_mailers
 function instalador_mailers {
-	if [ $general_sistema = 0 ]; then
-		echo 'Instalando mailers...'
+	echo 'Instalando mailers...'
 
-		sudo bash -c "cat <<EEOS > /usr/local/bin/informe.sh
+	if [[ ${programas_a_instalar} = *'mutt'* ]]; then
+		sudo ${gestor_paquetes} install gpgsm
+
+		if [ ${general_sistema} = 0 ]; then
+			sudo bash -c "cat <<EEOS > /usr/local/bin/informe.sh
 #!/usr/bin/env bash
 
 cat <<EOS | mutt -s \"\\\$( whoami )@\\\$(uname -n): informe diario\" veltys@gmail.com
@@ -600,9 +603,9 @@ truncate -s 0 /var/log/health.log
 EEOS
 "
 
-		sudo chmod a+x /usr/local/bin/informe.sh
+			sudo chmod a+x /usr/local/bin/informe.sh
 
-		sudo bash -c "cat <<EEOS > /usr/local/bin/reinicio.sh
+			sudo bash -c "cat <<EEOS > /usr/local/bin/reinicio.sh
 #!/usr/bin/env bash
 
 sleep 60
@@ -616,8 +619,11 @@ EOS
 EEOS
 "
 
-		sudo chmod a+x /usr/local/bin/reinicio.sh
+			sudo chmod a+x /usr/local/bin/reinicio.sh
+		fi
 	fi
+
+	# FIXME: Añadir el resto
 }
 
 
