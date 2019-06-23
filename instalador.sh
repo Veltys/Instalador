@@ -4,65 +4,65 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 23-07-2019
-# Version       : 2.0.3
+# Version       : 2.0.4
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
 
 ## Variables
-gestorPaquetes='apt-get'
+gestor_paquetes='apt-get'
 
 
 ## Funciones 1: configurador_general
 function configurador_general {
 	echo -n '¿Qué se va a instalar? [(R)aspberry Pi|(V)PS|Otro]: '
-	read sistema
+	read general_sistema
 
 	echo -n 'Ok. Instalaremos '
 
-	sistema=${sistema:0:1}
-	sistema=${sistema,,}
+	general_sistema=${general_sistema:0:1}
+	general_sistema=${general_sistema,,}
 
-	case $sistema in
-		'r') sistema=0
+	case ${general_sistema} in
+		'r') general_sistema=0
 			 echo 'una Raspberry Pi'
 
 			 programas=('cifs-utils' 'gparted' 'ntp' 'pptp-linux' 'sshfs');;
 
-		'v') sistema=1
+		'v') general_sistema=1
 			 echo 'un servidor VPS'
 
 			 programas=('cifs-utils'           'ntp' 'pptp-linux' 'sshfs');;
 
-		*  ) sistema=2
+		*  ) general_sistema=2
 			 echo 'otro tipo de sistema'
 
 			 programas=('cifs-utils' 'gparted' 'ntp' 'pptp-linux' 'sshfs');;
 	esac
 
 	echo -n 'Nombre propio (no DNS) del sistema: '
-	read nombre_sistema
+	read general_nombre_sistema
 }
 
 
 ## Funciones 2: cambiador_de_contrasenyas
 function cambiador_de_contrasenyas {
-	if [ $sistema != 0 ] && [ $sistema != 1 ]; then
+	if [ ${general_sistema} != 0 ] && [ ${general_sistema} != 1 ]; then
 		echo -n '¿Es necesario cambiar las contraseñas? [S/n]: '
-		read contrasenya
+		read contrasenyas_contrasenya
 
-		contrasenya=${contrasenya:0:1}
-		contrasenya=${contrasenya,,}
+		contrasenyas_contrasenya=${contrasenyas_contrasenya:0:1}
+		contrasenyas_contrasenya=${contrasenyas_contrasenya,,}
 	fi
 
-	if [ $sistema = 0 ] || [ $sistema = 1 ] || [ $contrasenya != 'n' ]; then
-		quiensoy=$(whoami)
+	if [ ${general_sistema} = 0 ] || [ ${general_sistema} = 1 ] || [ ${contrasenyas_contrasenya} != 'n' ]; then
+		contrasenyas_quiensoy=$(whoami)
 
-		echo "Cambiando la contraseña del usuario $quiensoy"
+		echo "Cambiando la contraseña del usuario ${contrasenyas_quiensoy}"
 
-		sudo passwd $quiensoy
+		sudo passwd ${contrasenyas_quiensoy}
 
-		if [ "$quiensoy" != 'root' ]; then
+		if [ "${contrasenyas_quiensoy}" != 'root' ]; then
 			echo 'Cambiando la contraseña del usuario root'
 
 			sudo passwd
@@ -75,8 +75,8 @@ function cambiador_de_contrasenyas {
 function actualizador_sistema {
 	echo 'Actualizando sistema...'
 
-	sudo ${gestorPaquetes} update
-	sudo ${gestorPaquetes} upgrade -y
+	sudo ${gestor_paquetes} update
+	sudo ${gestor_paquetes} upgrade -y
 }
 
 
@@ -93,12 +93,12 @@ function instalador_paquetes {
 		instalar=${instalar:0:1}
 		instalar=${instalar,,}
 
-		if [ $instalar != 'n' ]; then
-			programas_a_instalar="$programas_a_instalar ${programas[$i]}"
+		if [ ${instalar} != 'n' ]; then
+			programas_a_instalar="${programas_a_instalar} ${programas[$i]}"
 		fi
 	done
 
-	sudo ${gestorPaquetes} install ${programas_a_instalar} -y
+	sudo ${gestor_paquetes} install ${programas_a_instalar} -y
 }
 
 
@@ -117,7 +117,7 @@ EOS
 
 	sudo chmod a+x /etc/update-motd.d/60-weather
 
-	if [ $sistema = 0 ]; then
+	if [ ${general_sistema} = 0 ]; then
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/50-custom-motd
 #!/bin/bash
 
@@ -161,15 +161,15 @@ EOS
 "
 
 		sudo chmod a+x /etc/update-motd.d/50-custom-motd
-	elif [ $sistema = 1 ]; then
-		OS=$(lsb_release -si)
+	elif [ $general_sistema = 1 ]; then
+		general_os=$(lsb_release -si)
 
-		if [ $OS = 'Ubuntu' ]; then
-			sudo ${gestorPaquetes} install landscape-common update-notifier-common -y
+		if [ $general_os = 'Ubuntu' ]; then
+			sudo ${gestor_paquetes} install landscape-common update-notifier-common -y
 
 			sudo /usr/lib/update-notifier/update-motd-updates-available --force
-		elif [ $OS = 'Debian' ]; then
-			sudo ${gestorPaquetes} install figlet
+		elif [ $general_os = 'Debian' ]; then
+			sudo ${gestor_paquetes} install figlet
 
 			# TODO: Quitar los ***REMOVED***
 			wget ***REMOVED***
@@ -306,7 +306,7 @@ EOS
 
 ## Funciones 6: configurador_ntp
 function configurador_ntp {
-	if [[ $programas_a_instalar = *'ntp'* ]]; then
+	if [[ ${programas_a_instalar} = *'ntp'* ]]; then
 		echo 'Configurando servidor de hora español (hora.roa.es)...'
 
 		sed '/^pool 0.[a-z]*.pool.ntp.org iburst$/i server hora.roa.es' /etc/ntp.conf | sudo tee /etc/ntp.conf > /dev/null
@@ -318,31 +318,31 @@ function configurador_ntp {
 function limpiador {
 	echo 'Haciendo limpieza...'
 
-	if [ $sistema = 0 ]; then
+	if [ ${general_sistema} = 0 ]; then
 		echo 'Eliminando el paquete "dphys-swapfile"...'
 
 		sudo dphys-swapfile swapoff
 		sudo dphys-swapfile uninstall
 
-		sudo ${gestorPaquetes} purge dphys-swapfile -y
+		sudo ${gestor_paquetes} purge dphys-swapfile -y
 	fi
 
-	sudo ${gestorPaquetes} autoremove -y
+	sudo ${gestor_paquetes} autoremove -y
 }
 
 
 ## Funciones 8: actualizador_dns
 function actualizador_dns {
 	echo -n '¿Se asignará un DNS dinámico? [S/n]: '
-	read dns
+	read actualizador_dns
 
-	dns=${dns:0:1}
-	dns=${dns,,}
+	actualizador_dns=${actualizador_dns:0:1}
+	actualizador_dns=${actualizador_dns,,}
 
-	if [ $dns != 'n' ]; then
+	if [ ${actualizador_dns} != 'n' ]; then
 		echo 'Instalando el paquete "curl", necesario para el DNS dinámico...'
 
-		sudo ${gestorPaquetes} install curl -y
+		sudo ${gestor_paquetes} install curl -y
 
 		echo 'Configurando parámetros del DNS dinámico...'
 
@@ -428,22 +428,22 @@ function configurador_backups {
 	# TODO: Delegar las copias de seguridad en CIFS, si está disponible
 
 	echo -n '¿Se realizarán copias de seguridad? [S/n]: '
-	read copia_de_seguridad
+	read backups_copia_de_seguridad
 
-	copia_de_seguridad=${copia_de_seguridad:0:1}
-	copia_de_seguridad=${copia_de_seguridad,,}
+	backups_copia_de_seguridad=${backups_copia_de_seguridad:0:1}
+	backups_copia_de_seguridad=${backups_copia_de_seguridad,,}
 
-	if [ $copia_de_seguridad != 'n' ]; then
+	if [ ${backups_copia_de_seguridad} != 'n' ]; then
 		echo 'Instalando el paquete "duplicity", necesario para las copias de seguridad...'
 
-		sudo ${gestorPaquetes} install duplicity lftp -y
+		sudo ${gestor_paquetes} install duplicity lftp -y
 
 		echo 'Configurando parámetros de la copia de seguridad...'
 
-		case $sistema in
-			0) backup_tipo_sistema='RaspberryPi' ;;
-			1) backup_tipo_sistema='VPS' ;;
-			*) backup_tipo_sistema='Otros' ;;
+		case ${general_sistema} in
+			0) backups_tipo_sistema='RaspberryPi' ;;
+			1) backups_tipo_sistema='VPS' ;;
+			*) backups_tipo_sistema='Otros' ;;
 		esac
 
 		echo -n 'Introduzca la contraseña del FTP de copias de seguridad: '
@@ -481,14 +481,14 @@ EOS
 
 ## Funciones 10: configurador_internet_movil
 function configurador_internet_movil {
-	if [ $sistema = 0 ]; then
+	if [ ${general_sistema} = 0 ]; then
 		echo -n '¿Se necesitará gestionar una conexión a Internet con un módem USB? [S/n]: '
-		read modem_usb
+		read internet_movil_modem_usb
 
-		modem_usb=${modem_usb:0:1}
-		modem_usb=${modem_usb,,}
+		internet_movil_modem_usb=${internet_movil_modem_usb:0:1}
+		internet_movil_modem_usb=${internet_movil_modem_usb,,}
 
-		if [ $modem_usb != 'n' ]; then
+		if [ ${internet_movil_modem_usb} != 'n' ]; then
 			echo 'Descargando el paquete "UMTSkeeper", necesario para administrar el módem usb...'
 
 			wget http://mintakaconciencia.net/squares/umtskeeper/src/umtskeeper.tar.gz
@@ -512,17 +512,17 @@ EOS
 
 ## Funciones 11: configurador_ssh_inverso
 function configurador_ssh_inverso {
-	if [ $sistema = 0 ]; then
+	if [ ${general_sistema} = 0 ]; then
 		echo -n '¿Se necesitará un túnel SSH inverso? [S/n]: '
-		read tunel_ssh
+		read ssh_inverso_tunel_ssh
 
-		tunel_ssh=${tunel_ssh:0:1}
-		tunel_ssh=${tunel_ssh,,}
+		ssh_inverso_tunel_ssh=${ssh_inverso_tunel_ssh:0:1}
+		ssh_inverso_tunel_ssh=${ssh_inverso_tunel_ssh,,}
 
-		if [ $tunel_ssh != 'n' ]; then
+		if [ ${ssh_inverso_tunel_ssh} != 'n' ]; then
 			echo 'Instalando el paquete "autossh", necesario para mantener el túnel SSH...'
 
-			sudo ${gestorPaquetes} install autossh -y
+			sudo ${gestor_paquetes} install autossh -y
 
 			echo 'Configurando parámetros del túnel SSH...'
 
@@ -535,18 +535,18 @@ function configurador_ssh_inverso {
 
 			IFS=$OLDIFS
 
-			sudo bash -c "cat <<EOS > /usr/local/bin/tunel-${nombre_sistema}-Ultra.sh
+			sudo bash -c "cat <<EOS > /usr/local/bin/tunel-${general_nombre_sistema}-Ultra.sh
 #!/bin/bash
 
-autossh -M 5122 -f -C -i /home/pi/.ssh/${nombre_sistema}.pem -o ServerAliveInterval=20 -N -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@ultra.ordenadores.veltys.net -p 22008
+autossh -M 5122 -f -C -i /home/pi/.ssh/${general_nombre_sistema}.pem -o ServerAliveInterval=20 -N -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@ultra.ordenadores.veltys.net -p 22007
 
 EOS
 "
 
-	sudo bash -c "cat <<EOS > /usr/local/bin/conexion-${nombre_sistema}-Ultra.sh
+			sudo bash -c "cat <<EOS > /usr/local/bin/conexion-${general_nombre_sistema}-Ultra.sh
 #!/bin/bash
 
-ssh -C -i /home/pi/.ssh/${nombre_sistema}.pem -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@ultra.ordenadores.veltys.net -p 22008
+ssh -C -i /home/pi/.ssh/${general_nombre_sistema}.pem -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@ultra.ordenadores.veltys.net -p 22007
 
 EOS
 "
@@ -558,8 +558,8 @@ EOS
 			ssh_inverso_clave=${ssh_inverso_clave,,}
 
 			if [ $ssh_inverso_clave != 'n' ]; then
-				ssh-keygen -b 2048 -t rsa -f /home/pi/.ssh/${sistema}.pem
-				mv /home/pi/.ssh/${sistema}.pem.pub /home/pi/.ssh/${sistema}.pub
+				ssh-keygen -b 2048 -t rsa -f /home/pi/.ssh/${general_nombre_sistema}.pem
+				mv /home/pi/.ssh/${general_nombre_sistema}.pem.pub /home/pi/.ssh/${general_nombre_sistema}.pub
 
 				echo 'No olvide copiar la clave pública al servidor SSH'
 			else
@@ -573,12 +573,12 @@ EOS
 ## Funciones 12: configurador_contador_linux
 function configurador_contador_linux {
 	echo -n '¿Se debe instalar el script del contador LinuxCounter? [S/n]: '
-	read contador
+	read contador_linux_contador
 
-	contador=${contador:0:1}
-	contador=${contador,,}
+	contador_linux_contador=${contador_linux_contador:0:1}
+	contador_linux_contador=${contador_linux_contador,,}
 
-	if [ $contador != 'n' ]; then
+	if [ ${contador_linux_contador} != 'n' ]; then
 		echo 'Instalando el script del contador...'
 
 		wget https://github.com/christinloehner/linuxcounter-update-examples/raw/master/_official/lico-update.sh
@@ -598,7 +598,7 @@ function configurador_contador_linux {
 
 ## Funciones 13: instalador_mailers
 function instalador_mailers {
-	if [ $sistema = 0 ]; then
+	if [ $general_sistema = 0 ]; then
 		echo 'Instalando mailers...'
 
 		sudo bash -c "cat <<EEOS > /usr/local/bin/informe.sh
@@ -643,15 +643,15 @@ function instalador_claves_ssh {
 	echo 'Obteniendo las claves públicas para el servidor SSH...'
 
 	echo -n 'Introduzca el usuario del servidor HTTP que contiene las claves: '
-	read usuario_http_ssh
+	read claves_ssh_usuario
 	
 	echo -n 'Introduzca la contraseña del servidor HTTP que contiene las claves: '
-	read contrasenya_http_ssh
+	read claves_ssh_contrasenya
 	
 	echo -n 'Introduzca la URL del servidor HTTP que contiene las claves: '
-	read url_http_ssh
+	read claves_ssh_url
 
-	wget --user=${usuario_http_ssh} --password=${contrasenya_http_ssh} ${url_http_ssh}
+	wget --user=${claves_ssh_usuario} --password=${claves_ssh_contrasenya} ${claves_ssh_url}
 
 	mkdir ~/.ssh
 
@@ -675,19 +675,19 @@ function personalizador_entorno {
 	sed -i -e "s/#alias l='ls -CF'/alias l='ls -CF'/g" ~/.bashrc
 
 	echo -n '¿Será necesario llamar al agente SSH (por ejemplo, para trabajar con Git)? [S/n]: '
-	read agente
+	read entorno_agente
 
-	agente=${agente:0:1}
-	agente=${agente,,}
+	entorno_agente=${entorno_agente:0:1}
+	entorno_agente=${entorno_agente,,}
 
-	if [ $agente != 'n' ]; then
+	if [ ${entorno_agente} != 'n' ]; then
 		echo 'Instalando autoarranque del agente SSH...'
 
 		cat <<EOS >> ~/.bashrc
 
 # Añadir clave(s) SSH al agente
 eval \$(ssh-agent)
-ssh-add ~/.ssh/${nombre_sistema}.pem
+ssh-add ~/.ssh/${general_nombre_sistema}.pem
 EOS
 	fi
 
@@ -697,7 +697,7 @@ alias ping='ping -c 4'
 alias traceroute='traceroute -I'
 EOS
 
-	if [ $sistema = 0 ]; then
+	if [ ${general_sistema} = 0 ]; then
 		cat <<EOS >> ~/.bash_aliases
 alias apagar_pantalla='/opt/vc/bin/vcgencmd display_power 0'
 alias encender_pantalla='/opt/vc/bin/vcgencmd display_power 1'
@@ -713,7 +713,7 @@ EOS
 function configurador_fstab {
 	echo 'Añadiendo sistemas de archivos remotos a /etc/fstab...'
 
-	if [[ $programas_a_instalar = *'cifs-utils'* ]]; then
+	if [[ ${programas_a_instalar} = *'cifs-utils'* ]]; then
 		echo -n 'Introduzca el usuario del servidor SMB: '
 		read usuario_smb
 
@@ -744,7 +744,7 @@ EOS
 		sudo chmod 777 /media/*
 fi
 
-	if [[ $programas_a_instalar = *'sshfs'* ]]; then
+	if [[ ${programas_a_instalar} = *'sshfs'* ]]; then
 		sudo bash -c "cat <<EOS >> /etc/fstab
 ***REMOVED***
 EOS
@@ -755,7 +755,7 @@ EOS
 		sudo chmod 777 ***REMOVED***
 	fi
 
-	if [ $sistema = 0 ]; then
+	if [ ${general_sistema} = 0 ]; then
 		echo 'En una Raspberry Pi, es necesario configurar manualmente el archivo de intercambio en /etc/fstab'
 		echo 'No olvide reiniciar y configurarlo'
 	fi
@@ -764,7 +764,9 @@ EOS
 
 ## Funciones 17: instalador_crontabs
 function instalador_crontabs {
-	if [ $sistema = 0 ]; then
+	echo 'Instalando las tareas programadas (crontabs)...'
+
+	if [ ${general_sistema} = 0 ]; then
 
 		crontab -l > crontab.tmp
 
@@ -798,7 +800,7 @@ EOS
 
 ## Funciones 18: arreglador_hdmi
 function arreglador_hdmi {
-	if [ $sistema = 0 ]; then
+	if [ ${general_sistema} = 0 ]; then
 		sudo bash -c "cat <<EOS >> /boot/config.txt
 
 # Enable idle HDMI poweroff
@@ -811,8 +813,8 @@ EOS
 
 ## Funciones 19: configurador_locales
 function configurador_locales {
-	if [ $sistema != 0 ]; then
-		sudo ${gestorPaquetes} install manpages-es manpages-es-extra
+	if [ ${general_sistema} != 0 ]; then
+		sudo ${gestor_paquetes} install manpages-es manpages-es-extra
 		sudo dpkg-reconfigure locales
 		export LANG=es_ES.UTF-8
 	fi
@@ -821,18 +823,18 @@ function configurador_locales {
 
 ## Funciones 20: instalador_kde
 function instalador_kde {
-	if [ $sistema != 0 ]; then
-		if [ $OS = 'Debian' ]; then
+	if [ ${general_sistema} != 0 ]; then
+		if [ ${general_os} = 'Debian' ]; then
 			echo -n '¿Instalar el escritorio KDE? [s/N]: '
 			read kde
 
-			kde=${kde:0:1}
-			kde=${kde,,}
+			kde_kde=${kde_kde:0:1}
+			kde_kde=${kde_kde,,}
 
-			if [ $kde = 's' ]; then
+			if [ ${kde_kde} = 's' ]; then
 				echo 'Instalando KDE...'
 
-				sudo ${gestorPaquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen
+				sudo ${gestor_paquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen
 			fi
 		fi
 	fi
@@ -894,8 +896,6 @@ echo 'No olvide instalar o actualizar el servidor VNC, si procede'
 configurador_fstab
 
 ## Instalación de crontabs
-echo 'Instalando las tareas programadas (crontabs)...'
-
 instalador_crontabs
 
 
