@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 15-06-2019
-# Version       : 2.0.1
+# Date          : 23-07-2019
+# Version       : 2.0.2
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -169,7 +169,7 @@ EOS
 
 			sudo /usr/lib/update-notifier/update-motd-updates-available --force
 		elif [ $OS = 'Debian' ]; then
-			sudo apt install figlet
+			sudo ${gestorPaquetes} install figlet
 
 			# TODO: Quitar los ***REMOVED***
 			wget ***REMOVED***
@@ -327,7 +327,7 @@ function limpiador {
 		sudo ${gestorPaquetes} purge dphys-swapfile -y
 	fi
 
-	sudo apt autoremove -y
+	sudo ${gestorPaquetes} autoremove -y
 }
 
 
@@ -812,7 +812,7 @@ EOS
 ## Funciones 19: configurador_locales
 function configurador_locales {
 	if [ $sistema != 0 ]; then
-		sudo apt install manpages-es manpages-es-extra
+		sudo ${gestorPaquetes} install manpages-es manpages-es-extra
 		sudo dpkg-reconfigure locales
 		export LANG=es_ES.UTF-8
 	fi
@@ -832,7 +832,7 @@ function instalador_kde {
 			if [ $kde = 's' ]; then
 				echo 'Instalando KDE...'
 
-				sudo apt install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen
+				sudo ${gestorPaquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen
 			fi
 		fi
 	fi
