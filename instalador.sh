@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 23-07-2019
-# Version       : 2.5.0
+# Version       : 2.5.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -84,7 +84,7 @@ function actualizador_sistema {
 function instalador_paquetes {
 	echo 'Instalando paquetes...'
 
-	programas_a_instalar='dnsutils htop nano'
+	programas_a_instalar='ca-certificates curl dnsutils htop nano'
 
 	for (( i = 0; i<${#programas[@]}; i++ )); do
 		echo -n "¿Instalar el paquete \"${programas[$i]}\"? [S/n]: "
