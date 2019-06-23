@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 23-07-2019
-# Version       : 2.4.0
+# Version       : 2.4.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -46,7 +46,7 @@ function configurador_general {
 
 
 ## Funciones 2: cambiador_de_contrasenyas
-function cambiador_de_contrasenyas {
+function cambiador_contrasenyas {
 	if [ ${general_sistema} != 0 ] && [ ${general_sistema} != 1 ]; then
 		echo -n '¿Es necesario cambiar las contraseñas? [S/n]: '
 		read contrasenyas_contrasenya
