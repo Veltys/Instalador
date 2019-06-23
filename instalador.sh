@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 23-07-2019
-# Version       : 2.0.4
+# Version       : 2.1.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -171,13 +171,6 @@ EOS
 		elif [ $general_os = 'Debian' ]; then
 			sudo ${gestor_paquetes} install figlet
 
-			# TODO: Quitar los ***REMOVED***
-			wget ***REMOVED***
-
-			sudo apt install ./update-notifier-common_0.99.3debian11_all.deb -y
-
-			sudo /usr/lib/update-notifier/update-motd-updates-available --force
-
 			sudo bash -c "cat <<EOS > /etc/update-motd.d/00-header
 #!/bin/sh
 #
@@ -262,9 +255,8 @@ EOS
 			sudo bash -c "cat <<EOS > /etc/update-motd.d/90-updates-available
 #!/bin/sh
 
-stamp=\"/var/lib/update-notifier/updates-available\"
-
-[ ! -r \"\\\$stamp\" ] || cat \"\\\$stamp\"
+echo \"Hay \\\$(apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+)\\\s\[[\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\]\\\s\\\([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\)? /i) {print \"\\\$1\\\n\"}' | wc -l) paquetes pendientes de instalación\"
+echo
 EOS
 "
 
