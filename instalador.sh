@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 23-07-2019
-# Version       : 2.3.0
+# Version       : 2.4.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -548,21 +548,6 @@ ssh -C -i /home/pi/.ssh/${general_nombre_sistema}.pem -R 2200${ssh_inverso_split
 
 EOS
 "
-
-			echo -n '¿Generar una clave nueva para el sistema? [S/n]: '
-			read ssh_inverso_clave
-
-			ssh_inverso_clave=${ssh_inverso_clave:0:1}
-			ssh_inverso_clave=${ssh_inverso_clave,,}
-
-			if [ $ssh_inverso_clave != 'n' ]; then
-				ssh-keygen -b 2048 -t rsa -f /home/pi/.ssh/${general_nombre_sistema}.pem
-				mv /home/pi/.ssh/${general_nombre_sistema}.pem.pub /home/pi/.ssh/${general_nombre_sistema}.pub
-
-				echo 'No olvide copiar la clave pública al servidor SSH'
-			else
-				echo 'No olvide copiar la clave privada al sistema'
-			fi
 		fi
 	fi
 }
