@@ -4,13 +4,14 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 23-07-2019
-# Version       : 2.5.1
+# Version       : 2.5.2
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
 
 ## Variables
 gestor_paquetes='apt-get'
+sistema_operativo=$(lsb_release -si)
 
 
 ## Funciones 1: configurador_general
@@ -162,14 +163,12 @@ EOS
 "
 
 		sudo chmod a+x /etc/update-motd.d/50-custom-motd
-	elif [ $general_sistema = 1 ]; then
-		general_os=$(lsb_release -si)
-
-		if [ $general_os = 'Ubuntu' ]; then
+	else
+		if [ ${sistema_operativo} = 'Ubuntu' ]; then
 			sudo ${gestor_paquetes} install landscape-common update-notifier-common -y
 
 			sudo /usr/lib/update-notifier/update-motd-updates-available --force
-		elif [ $general_os = 'Debian' ]; then
+		elif [ ${sistema_operativo} = 'Debian' ]; then
 			sudo ${gestor_paquetes} install figlet
 
 			sudo bash -c "cat <<EOS > /etc/update-motd.d/00-header
