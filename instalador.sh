@@ -4,13 +4,13 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 23-07-2019
-# Version       : 2.0.2
+# Version       : 2.0.3
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
 
 ## Variables
-gestorPaquetes='apt'
+gestorPaquetes='apt-get'
 
 
 ## Funciones 1: configurador_general
