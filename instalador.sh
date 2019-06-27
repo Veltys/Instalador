@@ -85,7 +85,7 @@ function actualizador_sistema {
 function instalador_paquetes {
 	echo 'Instalando paquetes...'
 
-	programas_a_instalar='ca-certificates curl dnsutils htop nano'
+	programas_a_instalar='ca-certificates curl dnsutils lsb-release htop nano'
 
 	for (( i = 0; i<${#programas[@]}; i++ )); do
 		echo -n "¿Instalar el paquete \"${programas[$i]}\"? [S/n]: "
