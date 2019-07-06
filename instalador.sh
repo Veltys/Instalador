@@ -826,7 +826,7 @@ function configurador_locales {
 ## Funciones 20: instalador_kde
 function instalador_kde {
 	if [ ${general_sistema} != 0 ]; then
-		if [ ${general_os} = 'Debian' ]; then
+		if [ ${sistema_operativo} = 'Debian' ]; then
 			echo -n '¿Instalar el escritorio KDE? [s/N]: '
 			read kde
 
@@ -909,6 +909,7 @@ instalador_crontabs
 
 ## Arreglador del ahorro de energía del HDMI
 arreglador_hdmi
+
 
 ## Configurador de las locales
 configurador_locales
