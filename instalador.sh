@@ -680,8 +680,8 @@ EOS
 	fi
 
 	cat <<EOS >> ~/.bash_aliases
-alias su='su -p'
 alias ping='ping -c 4'
+# alias su='su -p'
 alias traceroute='traceroute -I'
 EOS
 
