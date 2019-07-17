@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 23-07-2019
-# Version       : 2.5.2
+# Date          : 17-07-2019
+# Version       : 2.5.3
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -828,7 +828,7 @@ function instalador_kde {
 	if [ ${general_sistema} != 0 ]; then
 		if [ ${sistema_operativo} = 'Debian' ]; then
 			echo -n '¿Instalar el escritorio KDE? [s/N]: '
-			read kde
+			read kde_kde
 
 			kde_kde=${kde_kde:0:1}
 			kde_kde=${kde_kde,,}
