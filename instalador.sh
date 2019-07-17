@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 17-07-2019
-# Version       : 2.5.3
+# Version       : 2.5.4
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -240,7 +240,7 @@ swap_usage=\\\`free -m | awk '/Swap/ { printf(\"%3.1f%%\", \"exit !$2;$3/$2*100\
 users=\\\`users | wc -w\\\`
 time=\\\`uptime | grep -ohe 'up .*' | sed 's/,/\\\ hours/g' | awk '{ printf \\\$2\" \"\\\$3 }'\\\`
 processes=\\\`ps aux | wc -l\\\`
-ip=\\\`ifconfig \\\$(route | grep default | awk '{ print $8 }') | grep \"inet \" | awk '{print \\\$2}'\\\`
+ip=\\\`ip a | grep glo | awk '{print $2}' | head -1 | cut -f1 -d/\\\`
 
 echo \"System information as of: \\\$date\"
 echo
