@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 22-07-2019
-# Version       : 2.5.5
+# Version       : 2.5.6
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -169,7 +169,7 @@ EOS
 
 			sudo /usr/lib/update-notifier/update-motd-updates-available --force
 		elif [ ${sistema_operativo} = 'Debian' ]; then
-			sudo ${gestor_paquetes} install figlet
+			sudo ${gestor_paquetes} install figlet -y
 
 			sudo bash -c "cat <<EOS > /etc/update-motd.d/00-header
 #!/bin/sh
