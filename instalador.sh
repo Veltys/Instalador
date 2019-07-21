@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 22-07-2019
-# Version       : 2.5.10
+# Version       : 2.6.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -323,7 +323,29 @@ function limpiador {
 }
 
 
-## Funciones 8: actualizador_dns
+## Funciones 8: configurador_cortafuegos
+function configurador_cortafuegos {
+	echo -n '¿Se necesitará instalar un cortafuegos? [S/n]: '
+	read cortafuegos_cortafuegos
+
+	cortafuegos_cortafuegos=${cortafuegos_cortafuegos:0:1}
+	cortafuegos_cortafuegos=${cortafuegos_cortafuegos,,}
+
+	if [ ${cortafuegos_cortafuegos} != 'n' ]; then
+		echo 'Instalando el cortafuegos UFW...'
+
+		sudo ${gestor_paquetes} install ufw -y
+
+		echo 'Configurando el cortafuegos UFW para permitir las conexiones SSH...'
+		sudo ufw allow 22/tcp comment 'SSH server'
+		sudo ufw enable
+
+		echo 'No olvide, de ser necesario, añadir más reglas con la orden "ufw allow ..."'
+	fi
+}
+
+
+## Funciones 9: actualizador_dns
 function actualizador_dns {
 	echo -n '¿Se asignará un DNS dinámico? [S/n]: '
 	read dns_dns
@@ -415,7 +437,7 @@ EOS
 
 
 
-## Funciones 9: configurador_backups
+## Funciones 10: configurador_backups
 function configurador_backups {
 	# TODO: Delegar las copias de seguridad en CIFS, si está disponible
 
@@ -476,7 +498,7 @@ EOS
 
 
 
-## Funciones 10: configurador_internet_movil
+## Funciones 11: configurador_internet_movil
 function configurador_internet_movil {
 	if [ ${general_sistema} = 0 ]; then
 		echo -n '¿Se necesitará gestionar una conexión a Internet con un módem USB? [S/n]: '
@@ -507,7 +529,7 @@ EOS
 
 
 
-## Funciones 11: configurador_ssh_inverso
+## Funciones 12: configurador_ssh_inverso
 function configurador_ssh_inverso {
 	if [ ${general_sistema} = 0 ]; then
 		echo -n '¿Se necesitará un túnel SSH inverso? [S/n]: '
@@ -552,7 +574,7 @@ EOS
 }
 
 
-## Funciones 12: configurador_contador_linux
+## Funciones 13: configurador_contador_linux
 function configurador_contador_linux {
 	echo -n '¿Se debe instalar el script del contador LinuxCounter? [S/n]: '
 	read contador_linux_contador
@@ -578,7 +600,7 @@ function configurador_contador_linux {
 }
 
 
-## Funciones 13: instalador_mailers
+## Funciones 14: instalador_mailers
 function instalador_mailers {
 	echo 'Instalando mailers...'
 
@@ -626,7 +648,7 @@ EEOS
 }
 
 
-## Funciones 14: instalador_claves_ssh
+## Funciones 15: instalador_claves_ssh
 function instalador_claves_ssh {
 	echo 'Obteniendo las claves públicas para el servidor SSH...'
 
@@ -643,7 +665,7 @@ function instalador_claves_ssh {
 }
 
 
-## Funciones 15: personalizador_entorno
+## Funciones 16: personalizador_entorno
 function personalizador_entorno {
 	echo 'Estableciendo personalizaciones del entorno...'
 
@@ -691,7 +713,7 @@ EOS
 
 
 
-## Funciones 16: configurador_fstab
+## Funciones 17: configurador_fstab
 function configurador_fstab {
 	echo 'Añadiendo sistemas de archivos remotos a /etc/fstab...'
 
@@ -758,7 +780,7 @@ fi
 }
 
 
-## Funciones 17: instalador_crontabs
+## Funciones 18: instalador_crontabs
 function instalador_crontabs {
 	echo 'Instalando las tareas programadas (crontabs)...'
 
@@ -794,7 +816,7 @@ EOS
 }
 
 
-## Funciones 18: arreglador_hdmi
+## Funciones 19: arreglador_hdmi
 function arreglador_hdmi {
 	if [ ${general_sistema} = 0 ]; then
 		sudo bash -c "cat <<EOS >> /boot/config.txt
@@ -807,7 +829,7 @@ EOS
 }
 
 
-## Funciones 19: configurador_locales
+## Funciones 20: configurador_locales
 function configurador_locales {
 	if [ ${general_sistema} != 0 ]; then
 		sudo ${gestor_paquetes} install manpages-es manpages-es-extra
@@ -817,7 +839,7 @@ function configurador_locales {
 }
 
 
-## Funciones 20: instalador_kde
+## Funciones 21: instalador_kde
 function instalador_kde {
 	if [ ${general_sistema} != 0 ]; then
 		if [ ${sistema_operativo} = 'Debian' ]; then
@@ -831,6 +853,11 @@ function instalador_kde {
 				echo 'Instalando KDE...'
 
 				sudo ${gestor_paquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen
+
+				# Componente gráfico del cortafuegos, instalable en el caso de tener KDE
+				if [ ${cortafuegos_cortafuegos} != 'n' ]; then
+					sudo ${gestor_paquetes} install gufw -y
+				fi
 			fi
 		fi
 	fi
@@ -859,6 +886,9 @@ configurador_ntp
 
 ## Desinstalador de paquetes no necesarios
 limpiador
+
+## Configurador del cortafuegos
+configurador_cortafuegos
 
 ## Actualizador de DNS dinámico
 actualizador_dns
