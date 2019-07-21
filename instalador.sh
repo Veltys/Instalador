@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 22-07-2019
-# Version       : 2.5.8
+# Version       : 2.5.9
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -630,16 +630,10 @@ EEOS
 function instalador_claves_ssh {
 	echo 'Obteniendo las claves públicas para el servidor SSH...'
 
-	echo -n 'Introduzca el usuario del servidor HTTP que contiene las claves: '
-	read claves_ssh_usuario
-	
-	echo -n 'Introduzca la contraseña del servidor HTTP que contiene las claves: '
-	read claves_ssh_contrasenya
-	
 	echo -n 'Introduzca la URL del servidor HTTP que contiene las claves: '
 	read claves_ssh_url
 
-	wget --user=${claves_ssh_usuario} --password=${claves_ssh_contrasenya} ${claves_ssh_url}
+	wget ${claves_ssh_url}
 
 	mkdir ~/.ssh
 
