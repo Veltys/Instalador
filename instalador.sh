@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 22-07-2019
-# Version       : 2.5.7
+# Version       : 2.5.8
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -112,7 +112,7 @@ function configurador_motd {
 
 export TERM=xterm-256color
 
-curl es.wttr.in/?0
+curl \"es.wttr.in/?0&m\"
 echo
 EOS
 "
