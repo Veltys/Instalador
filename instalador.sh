@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 22-07-2019
-# Version       : 2.5.9
+# Version       : 2.5.10
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -326,12 +326,12 @@ function limpiador {
 ## Funciones 8: actualizador_dns
 function actualizador_dns {
 	echo -n '¿Se asignará un DNS dinámico? [S/n]: '
-	read actualizador_dns
+	read dns_dns
 
-	actualizador_dns=${actualizador_dns:0:1}
-	actualizador_dns=${actualizador_dns,,}
+	dns_dns=${dns_dns:0:1}
+	dns_dns=${dns_dns,,}
 
-	if [ ${actualizador_dns} != 'n' ]; then
+	if [ ${dns_dns} != 'n' ]; then
 		echo 'Instalando el paquete "curl", necesario para el DNS dinámico...'
 
 		sudo ${gestor_paquetes} install curl -y
@@ -339,31 +339,31 @@ function actualizador_dns {
 		echo 'Configurando parámetros del DNS dinámico...'
 
 		echo -n 'Nombre de usuario: '
-		read actualizador_usuario
+		read dns_usuario
 
 		echo -n 'Contraseña: '
-		read actualizador_contrasenya
+		read dns_contrasenya
 
 		echo -n '¿Cuántos dominios DNS se van a gestionar?: '
-		read actualizador_num_dominios
+		read dns_num_dominios
 
-		for (( i = 0; i<${actualizador_num_dominios}; i++ )); do
+		for (( i = 0; i<${dns_num_dominios}; i++ )); do
 			echo -n 'Introduzca el dominio nº' $(( i+1 ))': '
-			read actualizador_dominios[$i]
+			read dns_dominios[$i]
 		done
 
 		sudo bash -c "cat <<EOS > /usr/local/bin/actualizador.sh
 #!/bin/bash
 
 ## Parámetros
-usuario='${actualizador_usuario}'
-password='${actualizador_contrasenya}'
+usuario='${dns_usuario}'
+password='${dns_contrasenya}'
 
 EOS
 "
 
-		for (( i = 0; i<${actualizador_num_dominios}; i++ )); do
-			sudo bash -c "echo \"hosts[${i}]='${actualizador_dominios[$i]}'\" >> /usr/local/bin/actualizador.sh"
+		for (( i = 0; i<${dns_num_dominios}; i++ )); do
+			sudo bash -c "echo \"hosts[${i}]='${dns_dominios[$i]}'\" >> /usr/local/bin/actualizador.sh"
 		done
 
 		sudo bash -c "cat <<EOS >> /usr/local/bin/actualizador.sh
@@ -420,12 +420,12 @@ function configurador_backups {
 	# TODO: Delegar las copias de seguridad en CIFS, si está disponible
 
 	echo -n '¿Se realizarán copias de seguridad? [S/n]: '
-	read backups_copia_de_seguridad
+	read backups_backups
 
-	backups_copia_de_seguridad=${backups_copia_de_seguridad:0:1}
-	backups_copia_de_seguridad=${backups_copia_de_seguridad,,}
+	backups_backups=${backups_backups:0:1}
+	backups_backups=${backups_backups,,}
 
-	if [ ${backups_copia_de_seguridad} != 'n' ]; then
+	if [ ${backups_backups} != 'n' ]; then
 		echo 'Instalando el paquete "duplicity", necesario para las copias de seguridad...'
 
 		sudo ${gestor_paquetes} install duplicity lftp -y
