@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 22-07-2019
-# Version       : 2.6.0
+# Date          : 19-08-2019
+# Version       : 2.6.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -16,7 +16,7 @@ sistema_operativo=$(lsb_release -si)
 
 ## Funciones 1: configurador_general
 function configurador_general {
-	echo -n '¿Qué se va a instalar? [(R)aspberry Pi|(V)PS|Otro]: '
+	echo -n '¿Qué sistema se va a instalar? [(R)aspberry Pi|(V)PS|(O)tro]: '
 	read general_sistema
 
 	echo -n 'Ok. Instalaremos '
@@ -917,27 +917,22 @@ personalizador_entorno
 ## VNC
 echo 'No olvide instalar o actualizar el servidor VNC, si procede'
 
-
 ## Montaje de sistemas de archivos
 configurador_fstab
 
 ## Instalación de crontabs
 instalador_crontabs
 
-
 # TODO: Instalar y configurar el cliente VPN (PPP)
 # sudo nano /etc/ppp/peers/Plus
 # sudo nano /etc/ppp/ip-up.d/000updateroutingtable
 # sudo chmod a+x /etc/ppp/ip-up.d/000updateroutingtable
 
-
 ## Arreglador del ahorro de energía del HDMI
 arreglador_hdmi
 
-
 ## Configurador de las locales
 configurador_locales
-
 
 ## Instalador del maravilloso KDE
 instalador_kde
