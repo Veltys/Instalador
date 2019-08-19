@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 19-08-2019
-# Version       : 2.6.1
+# Version       : 2.7.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -107,71 +107,9 @@ function instalador_paquetes {
 function configurador_motd {
 	echo 'Configurando el MOTD....'
 
-	sudo bash -c "cat <<EOS > /etc/update-motd.d/60-weather
-#!/bin/sh
+	sudo ${gestor_paquetes} install figlet -y
 
-export TERM=xterm-256color
-
-curl \"es.wttr.in/?0&m\"
-echo
-EOS
-"
-
-	sudo chmod a+x /etc/update-motd.d/60-weather
-
-	if [ ${general_sistema} = 0 ]; then
-		sudo bash -c "cat <<EOS > /etc/update-motd.d/50-custom-motd
-#!/bin/bash
-
-export TERM=xterm-256color
-
-let upSeconds=\"\\\$(/usr/bin/cut -d. -f1 /proc/uptime)\"
-let secs=\\\$((\\\${upSeconds}%60))
-let mins=\\\$((\\\${upSeconds}/60%60))
-let hours=\\\$((\\\${upSeconds}/3600%24))
-let days=\\\$((\\\${upSeconds}/86400))
-UPTIME=\\\`printf \"%d días, %02dh%02dm%02ds\" \"\\\$days\" \"\\\$hours\" \"\\\$mins\" \"\\\$secs\"\\\`
-
-MEMFREE=\\\`cat /proc/meminfo | grep MemFree | awk {'print \\\$2'}\\\`
-MEMTOTAL=\\\`cat /proc/meminfo | grep MemTotal | awk {'print \\\$2'}\\\`
-
-SDUSED=\\\`df -h | grep 'dev/root' | awk '{print \\\$3}' | xargs\\\`
-SDAVAIL=\\\`df -h | grep 'dev/root' | awk '{print \\\$4}' | xargs\\\`
-
-# get the load averages
-read one five fifteen rest < /proc/loadavg
-
-DARKGREY=\"\\\$(tput sgr0 ; tput bold ; tput setaf 0)\"
-RED=\"\\\$(tput sgr0 ; tput setaf 1)\"
-GREEN=\"\\\$(tput sgr0 ; tput setaf 2)\"
-BLUE=\"\\\$(tput sgr0 ; tput setaf 4)\"
-NC=\"\\\$(tput sgr0)\" # No Color
-
-echo \"\\\${GREEN}
-   .~~.   .~~.    \\\`date +\"%A, %e %B %Y, %r\"\\\`
-  '. \ ' ' / .'   \\\`uname -srmo\\\`\\\${RED}
-   .~ .~~~..~.
-  : .~.'~'.~. :   \\\${DARKGREY}Tiempo en línea..........: \\\${BLUE}\\\${UPTIME}\\\${RED}
- ~ (   ) (   ) ~  \\\${DARKGREY}Memoria..................: \\\${BLUE}\\\${MEMFREE}kB (libre) / \\\${MEMTOTAL}kB (total)\\\${RED}
-( : '~'.~.'~' : ) \\\${DARKGREY}Uso de disco.............: \\\${BLUE}\\\${SDUSED} (usado) / \\\${SDAVAIL} (libre)\\\${RED}
- ~ .~ (   ) ~. ~  \\\${DARKGREY}Cargas de trabajo........: \\\${BLUE}\\\${one}, \\\${five}, \\\${fifteen} (1, 5, 15 min)\\\${RED}
-  (  : '~' :  )   \\\${DARKGREY}Procesos en ejecución....: \\\${BLUE}\\\`ps ax | wc -l | tr -d \" \"\\\`\\\${RED}
-   '~ .~~~. ~'    \\\${DARKGREY}Direcciones IP...........: \\\${BLUE}\\\`ip a | grep glo | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\` y \\\`wget -q -O - http://icanhazip.com/ | tail\\\`\\\${RED}
-       '~'        \\\${DARKGREY}Temperatura del sistema..: \\\${BLUE}\\\`/opt/vc/bin/vcgencmd measure_temp | sed -r -e \"s/^temp=([0-9]*)\\\.([0-9])'C$/\1,\2 C/\"\\\`\\\${NC}
-\"
-EOS
-"
-
-		sudo chmod a+x /etc/update-motd.d/50-custom-motd
-	else
-		if [ ${sistema_operativo} = 'Ubuntu' ]; then
-			sudo ${gestor_paquetes} install landscape-common update-notifier-common -y
-
-			sudo /usr/lib/update-notifier/update-motd-updates-available --force
-		elif [ ${sistema_operativo} = 'Debian' ]; then
-			sudo ${gestor_paquetes} install figlet -y
-
-			sudo bash -c "cat <<EOS > /etc/update-motd.d/00-header
+	sudo bash -c "cat <<EOS > /etc/update-motd.d/00-header
 #!/bin/sh
 #
 #    00-header - create the header of the MOTD
@@ -210,7 +148,62 @@ printf \"\\\n\"
 EOS
 "
 
-			sudo bash -c "cat <<EOS > /etc/update-motd.d/10-sysinfo
+	sudo bash -c "cat <<EOS > /etc/update-motd.d/60-weather
+#!/bin/sh
+
+export TERM=xterm-256color
+
+curl \"es.wttr.in/?0&m\"
+echo
+EOS
+"
+
+	if [ ${sistema_operativo} = 'Ubuntu' ]; then
+		sudo ${gestor_paquetes} install landscape-common update-notifier-common -y
+
+		sudo /usr/lib/update-notifier/update-motd-updates-available --force
+	fi
+
+	if [ ${sistema_operativo} = 'Debian' ] && [ ${sistema_operativo} = 'Raspbian' ]; then
+		sudo bash -c "cat <<EOS > /etc/update-motd.d/80-updates-available
+#!/bin/sh
+
+echo \"Hay \\\$(apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+)\\\s\[[\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\]\\\s\\\([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\)? /i) {print \"\\\$1\\\n\"}' | wc -l) paquetes no actualizados\"
+echo
+EOS
+"
+
+		sudo bash -c "cat <<EOS > /etc/update-motd.d/90-footer
+#!/bin/sh
+#
+#    90-footer - write the admin's footer to the MOTD
+#    Copyright (c) 2013 Nick Charlton
+#    Copyright (c) 2009-2010 Canonical Ltd.
+#
+#    Authors: Nick Charlton <hello@nickcharlton.net>
+#             Dustin Kirkland <kirkland@canonical.com>
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ 
+[ -f /etc/motd.tail ] && cat /etc/motd.tail || true
+EOS
+"
+	fi
+
+	if [ ${sistema_operativo} = 'Debian' ]; then
+		sudo bash -c "cat <<EOS > /etc/update-motd.d/10-sysinfo
 #!/bin/bash
 #
 #    10-sysinfo - generate the system information
@@ -252,47 +245,52 @@ echo
 EOS
 "
 
-			sudo bash -c "cat <<EOS > /etc/update-motd.d/90-updates-available
-#!/bin/sh
+		sudo rm /etc/update-motd.d/10-uname
+	elif [ ${sistema_operativo} = 'Raspbian' ]; then
+		sudo bash -c "cat <<EOS > /etc/update-motd.d/50-custom-motd
+#!/bin/bash
 
-echo \"Hay \\\$(apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+)\\\s\[[\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\]\\\s\\\([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\)? /i) {print \"\\\$1\\\n\"}' | wc -l) paquetes no actualizados\"
-echo
+export TERM=xterm-256color
+
+let upSeconds=\"\\\$(/usr/bin/cut -d. -f1 /proc/uptime)\"
+let secs=\\\$((\\\${upSeconds}%60))
+let mins=\\\$((\\\${upSeconds}/60%60))
+let hours=\\\$((\\\${upSeconds}/3600%24))
+let days=\\\$((\\\${upSeconds}/86400))
+UPTIME=\\\`printf \"%d días, %02dh%02dm%02ds\" \"\\\$days\" \"\\\$hours\" \"\\\$mins\" \"\\\$secs\"\\\`
+
+MEMFREE=\\\`cat /proc/meminfo | grep MemFree | awk {'print \\\$2'}\\\`
+MEMTOTAL=\\\`cat /proc/meminfo | grep MemTotal | awk {'print \\\$2'}\\\`
+
+SDUSED=\\\`df -h | grep 'dev/root' | awk '{print \\\$3}' | xargs\\\`
+SDAVAIL=\\\`df -h | grep 'dev/root' | awk '{print \\\$4}' | xargs\\\`
+
+# get the load averages
+read one five fifteen rest < /proc/loadavg
+
+DARKGREY=\"\\\$(tput sgr0 ; tput bold ; tput setaf 0)\"
+RED=\"\\\$(tput sgr0 ; tput setaf 1)\"
+GREEN=\"\\\$(tput sgr0 ; tput setaf 2)\"
+BLUE=\"\\\$(tput sgr0 ; tput setaf 4)\"
+NC=\"\\\$(tput sgr0)\" # No Color
+
+echo \"\\\${GREEN}
+   .~~.   .~~.    \\\`date +\"%A, %e %B %Y, %r\"\\\`
+  '. \ ' ' / .'   \\\`uname -srmo\\\`\\\${RED}
+   .~ .~~~..~.
+  : .~.'~'.~. :   \\\${DARKGREY}Tiempo en línea..........: \\\${BLUE}\\\${UPTIME}\\\${RED}
+ ~ (   ) (   ) ~  \\\${DARKGREY}Memoria..................: \\\${BLUE}\\\${MEMFREE}kB (libre) / \\\${MEMTOTAL}kB (total)\\\${RED}
+( : '~'.~.'~' : ) \\\${DARKGREY}Uso de disco.............: \\\${BLUE}\\\${SDUSED} (usado) / \\\${SDAVAIL} (libre)\\\${RED}
+ ~ .~ (   ) ~. ~  \\\${DARKGREY}Cargas de trabajo........: \\\${BLUE}\\\${one}, \\\${five}, \\\${fifteen} (1, 5, 15 min)\\\${RED}
+  (  : '~' :  )   \\\${DARKGREY}Procesos en ejecución....: \\\${BLUE}\\\`ps ax | wc -l | tr -d \" \"\\\`\\\${RED}
+   '~ .~~~. ~'    \\\${DARKGREY}Direcciones IP...........: \\\${BLUE}\\\`ip a | grep glo | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\` y \\\`wget -q -O - http://icanhazip.com/ | tail\\\`\\\${RED}
+       '~'        \\\${DARKGREY}Temperatura del sistema..: \\\${BLUE}\\\`/opt/vc/bin/vcgencmd measure_temp | sed -r -e \"s/^temp=([0-9]*)\\\.([0-9])'C$/\1,\2 C/\"\\\`\\\${NC}
+\"
 EOS
 "
-
-			sudo bash -c "cat <<EOS > /etc/update-motd.d/90-footer
-#!/bin/sh
-#
-#    90-footer - write the admin's footer to the MOTD
-#    Copyright (c) 2013 Nick Charlton
-#    Copyright (c) 2009-2010 Canonical Ltd.
-#
-#    Authors: Nick Charlton <hello@nickcharlton.net>
-#             Dustin Kirkland <kirkland@canonical.com>
-#
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License along
-#    with this program; if not, write to the Free Software Foundation, Inc.,
-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-[ -f /etc/motd.tail ] && cat /etc/motd.tail || true
-EOS
-"
-
-			sudo rm /etc/update-motd.d/10-uname
-
-			sudo chmod a+x /etc/update-motd.d/*
-		fi
 	fi
+
+	sudo chmod a+x /etc/update-motd.d/*
 }
 
 
