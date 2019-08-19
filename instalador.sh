@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 19-08-2019
-# Version       : 2.7.0
+# Version       : 2.7.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -335,7 +335,7 @@ function configurador_cortafuegos {
 		sudo ${gestor_paquetes} install ufw -y
 
 		echo 'Configurando el cortafuegos UFW para permitir las conexiones SSH...'
-		sudo ufw allow 22/tcp comment 'SSH server'
+		sudo ufw allow 22/tcp comment 'Servidor SSH'
 		sudo ufw enable
 
 		echo 'No olvide, de ser necesario, añadir más reglas con la orden "ufw allow ..."'
