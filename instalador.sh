@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 19-08-2019
-# Version       : 2.7.1
+# Version       : 2.8.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -434,11 +434,8 @@ EOS
 }
 
 
-
 ## Funciones 10: configurador_backups
 function configurador_backups {
-	# TODO: Delegar las copias de seguridad en CIFS, si está disponible
-
 	echo -n '¿Se realizarán copias de seguridad? [S/n]: '
 	read backups_backups
 
@@ -448,7 +445,7 @@ function configurador_backups {
 	if [ ${backups_backups} != 'n' ]; then
 		echo 'Instalando el paquete "duplicity", necesario para las copias de seguridad...'
 
-		sudo ${gestor_paquetes} install duplicity lftp -y
+		sudo ${gestor_paquetes} install duplicity -y
 
 		echo 'Configurando parámetros de la copia de seguridad...'
 
@@ -458,14 +455,25 @@ function configurador_backups {
 			*) backups_tipo_sistema='Otros' ;;
 		esac
 
-		echo -n 'Introduzca la dirección del servidor FTP de copias de seguridad: '
-		read backups_servidor_ftp
+		if [[ ${programas_a_instalar} = *'cifs-utils'* ]]; then
+		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
+#!/bin/bash
 
-		echo -n 'Introduzca el usuario del servidor FTP de copias de seguridad: '
-		read backups_usuario_ftp
+duplicity --no-encryption --full-if-older-than 1M --exclude /mnt --exclude /media --exclude /tmp --exclude /proc --exclude /sys --exclude /var/lib/lxcfs / \"/media/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
 
-		echo -n 'Introduzca la contraseña del servidor FTP de copias de seguridad: '
-		read backups_contrasenya_ftp
+EOS
+"
+		else
+			sudo ${gestor_paquetes} lftp -y
+
+			echo -n 'Introduzca la dirección del servidor FTP de copias de seguridad: '
+			read backups_servidor_ftp
+
+			echo -n 'Introduzca el usuario del servidor FTP de copias de seguridad: '
+			read backups_usuario_ftp
+
+			echo -n 'Introduzca la contraseña del servidor FTP de copias de seguridad: '
+			read backups_contrasenya_ftp
 
 		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
 #!/bin/bash
@@ -478,6 +486,7 @@ unset FTP_PASSWORD
 
 EOS
 "
+		fi
 
 		sudo chmod u+x /usr/local/bin/backup.sh
 
