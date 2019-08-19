@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 19-08-2019
-# Version       : 3.0.0
+# Version       : 3.0.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -14,18 +14,18 @@ if [ -f 'config.sh' ]; then
 	source config.sh
 fi
 
-if [ ! -z "$gestor_paquetes" ]; then
+if [ -z "$gestor_paquetes" ]; then
 	gestor_paquetes='apt-get'
 fi
 
-if [ ! -z "$sistema_operativo" ]; then
+if [ -z "$sistema_operativo" ]; then
 	sistema_operativo=$(lsb_release -si)
 fi
 
 
 ## Funciones 1: configurador_general
 function configurador_general {
-	if [ ! -z "$general_sistema" ]; then
+	if [ -z "$general_sistema" ]; then
 		echo -n '¿Qué sistema se va a instalar? [(R)aspberry Pi|(V)PS|(O)tro]: '
 		read general_sistema
 
@@ -62,7 +62,7 @@ function configurador_general {
 ## Funciones 2: cambiador_de_contrasenyas
 function cambiador_contrasenyas {
 	if [ ${general_sistema} != 0 ] && [ ${general_sistema} != 1 ]; then
-		if [ ! -z "$contrasenyas_contrasenya" ]; then
+		if [ -z "$contrasenyas_contrasenya" ]; then
 			echo -n '¿Es necesario cambiar las contraseñas? [S/n]: '
 			read contrasenyas_contrasenya
 
@@ -338,7 +338,7 @@ function limpiador {
 
 ## Funciones 8: configurador_cortafuegos
 function configurador_cortafuegos {
-	if [ ! -z "$cortafuegos_cortafuegos" ]; then
+	if [ -z "$cortafuegos_cortafuegos" ]; then
 		echo -n '¿Se necesitará instalar un cortafuegos? [S/n]: '
 		read cortafuegos_cortafuegos
 
@@ -362,7 +362,7 @@ function configurador_cortafuegos {
 
 ## Funciones 9: actualizador_dns
 function actualizador_dns {
-	if [ ! -z "$dns_dns" ]; then
+	if [ -z "$dns_dns" ]; then
 		echo -n '¿Se asignará un DNS dinámico? [S/n]: '
 		read dns_dns
 
@@ -377,22 +377,22 @@ function actualizador_dns {
 
 		echo 'Configurando parámetros del DNS dinámico...'
 
-		if [ ! -z "$dns_usuario" ]; then
+		if [ -z "$dns_usuario" ]; then
 			echo -n 'Nombre de usuario: '
 			read dns_usuario
 		fi
 
-		if [ ! -z "$dns_contrasenya" ]; then
+		if [ -z "$dns_contrasenya" ]; then
 			echo -n 'Contraseña: '
 			read dns_contrasenya
 		fi
 
-		if [ ! -z "$dns_num_dominios" ]; then
+		if [ -z "$dns_num_dominios" ]; then
 			echo -n '¿Cuántos dominios DNS se van a gestionar?: '
 			read dns_num_dominios
 		fi
 
-		if [ ! -z "$dns_dominios" ]; then
+		if [ -z "$dns_dominios" ]; then
 			for (( i = 0; i<${dns_num_dominios}; i++ )); do
 				echo -n 'Introduzca el dominio nº' $(( i+1 ))': '
 				read dns_dominios[$i]
@@ -463,7 +463,7 @@ EOS
 
 ## Funciones 10: configurador_backups
 function configurador_backups {
-	if [ ! -z "$backups_backups" ]; then
+	if [ -z "$backups_backups" ]; then
 		echo -n '¿Se realizarán copias de seguridad? [S/n]: '
 		read backups_backups
 
@@ -495,17 +495,17 @@ EOS
 		else
 			sudo ${gestor_paquetes} lftp -y
 
-			if [ ! -z "$backups_servidor_ftp" ]; then
+			if [ -z "$backups_servidor_ftp" ]; then
 				echo -n 'Introduzca la dirección del servidor FTP de copias de seguridad: '
 				read backups_servidor_ftp
 			fi
 
-			if [ ! -z "$backups_usuario_ftp" ]; then
+			if [ -z "$backups_usuario_ftp" ]; then
 				echo -n 'Introduzca el usuario del servidor FTP de copias de seguridad: '
 				read backups_usuario_ftp
 			fi
 
-			if [ ! -z "$backups_contrasenya_ftp" ]; then
+			if [ -z "$backups_contrasenya_ftp" ]; then
 				echo -n 'Introduzca la contraseña del servidor FTP de copias de seguridad: '
 				read backups_contrasenya_ftp
 			fi
@@ -542,7 +542,7 @@ EOS
 ## Funciones 11: configurador_internet_movil
 function configurador_internet_movil {
 	if [ ${general_sistema} = 0 ]; then
-		if [ ! -z "$internet_movil_internet_movil" ]; then
+		if [ -z "$internet_movil_internet_movil" ]; then
 			echo -n '¿Se necesitará gestionar una conexión a Internet con un módem USB? [S/n]: '
 			read internet_movil_internet_movil
 
@@ -575,7 +575,7 @@ EOS
 ## Funciones 12: configurador_ssh_inverso
 function configurador_ssh_inverso {
 	if [ ${general_sistema} = 0 ]; then
-		if [ ! -z "$ssh_inverso_ssh_inverso" ]; then
+		if [ -z "$ssh_inverso_ssh_inverso" ]; then
 			echo -n '¿Se necesitará un túnel SSH inverso? [S/n]: '
 			read ssh_inverso_ssh_inverso
 
@@ -697,7 +697,7 @@ EEOS
 function instalador_claves_ssh {
 	echo 'Obteniendo las claves públicas para el servidor SSH...'
 
-	if [ ! -z "$claves_ssh_url" ]; then
+	if [ -z "$claves_ssh_url" ]; then
 		echo -n 'Introduzca la URL del servidor HTTP que contiene las claves: '
 		read claves_ssh_url
 	fi
@@ -727,7 +727,7 @@ function personalizador_entorno {
 	sed -i -e "s/#alias la='ls -A'/alias la='ls -A'/g" ~/.bashrc
 	sed -i -e "s/#alias l='ls -CF'/alias l='ls -CF'/g" ~/.bashrc
 
-	if [ ! -z "$entorno_agente" ]; then
+	if [ -z "$entorno_agente" ]; then
 		echo -n '¿Será necesario llamar al agente SSH (por ejemplo, para trabajar con Git)? [S/n]: '
 		read entorno_agente
 
@@ -768,17 +768,17 @@ function configurador_fstab {
 	echo 'Añadiendo sistemas de archivos remotos a /etc/fstab...'
 
 	if [[ ${programas_a_instalar} = *'cifs-utils'* ]]; then
-		if [ ! -z "$fstab_servidor_smb" ]; then
+		if [ -z "$fstab_servidor_smb" ]; then
 			echo -n 'Introduzca la dirección del servidor SMB: '
 			read fstab_servidor_smb
 		fi
 
-		if [ ! -z "$fstab_usuario_smb" ]; then
+		if [ -z "$fstab_usuario_smb" ]; then
 			echo -n 'Introduzca el usuario del servidor SMB: '
 			read fstab_usuario_smb
 		fi
 
-		if [ ! -z "$fstab_contrasenya_smb" ]; then
+		if [ -z "$fstab_contrasenya_smb" ]; then
 			echo -n 'Introduzca la contraseña del servidor SMB: '
 			read fstab_contrasenya_smb
 		fi
@@ -789,12 +789,12 @@ password=${fstab_contrasenya_smb}
 EOS
 "
 
-		if [ ! -z "$fstab_num_cifs" ]; then
+		if [ -z "$fstab_num_cifs" ]; then
 			echo -n '¿Cuántas unidades CIFS se van a montar?: '
 			read fstab_num_cifs
 		fi
 
-		if [ ! -z "$fstab_cifs" ]; then
+		if [ -z "$fstab_cifs" ]; then
 			for (( i = 0; i<${fstab_num_cifs}; i++ )); do
 				echo -n 'Introduzca la unidad nº' $(( i+1 ))': '
 				read fstab_cifs[$i]
@@ -811,22 +811,22 @@ EOS
 fi
 
 	if [[ ${programas_a_instalar} = *'sshfs'* ]]; then
-		if [ ! -z "$fstab_servidor_ssh" ]; then
+		if [ -z "$fstab_servidor_ssh" ]; then
 			echo -n 'Introduzca la dirección del servidor SSH: '
 			read fstab_servidor_ssh
 		fi
 
-		if [ ! -z "$fstab_usuario_ssh" ]; then
+		if [ -z "$fstab_usuario_ssh" ]; then
 			echo -n 'Introduzca el usuario del servidor SSH: '
 			read fstab_usuario_ssh
 		fi
 
-		if [ ! -z "$fstab_num_ssh" ]; then
+		if [ -z "$fstab_num_ssh" ]; then
 			echo -n '¿Cuántas unidades SSHFS se van a montar?: '
 			read fstab_num_ssh
 		fi
 
-		if [ ! -z "$fstab_ssh" ]; then
+		if [ -z "$fstab_ssh" ]; then
 			for (( i = 0; i<${fstab_num_ssh}; i++ )); do
 				echo -n 'Introduzca la unidad nº' $(( i+1 ))': '
 				read fstab_ssh[$i]
@@ -913,7 +913,7 @@ function instalador_kde {
 	if [ ${general_sistema} != 0 ]; then
 		if [ ${sistema_operativo} = 'Debian' ]; then
 
-			if [ ! -z "$kde_kde" ]; then
+			if [ -z "$kde_kde" ]; then
 				echo -n '¿Instalar el escritorio KDE? [s/N]: '
 				read kde_kde
 
