@@ -3,8 +3,8 @@
 # Title         : config.sh
 # Description   : Configura el instalador, para que sea autónomo, o lo más autónomo posible
 # Author        : Veltys
-# Date          : 19-08-2019
-# Version       : 1.0.0
+# Date          : 02-10-2019
+# Version       : 1.0.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -98,7 +98,7 @@ fstab_servidor_ssh=''
 # Usuario del servidor SSH
 fstab_usuario_ssh=''
 
-# Contraseña del servidor SSH
+# Unidades SSH a montar
 fstab_num_ssh=''
 
 # Unidades SSH
