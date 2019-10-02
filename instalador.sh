@@ -179,7 +179,7 @@ EOS
 		sudo /usr/lib/update-notifier/update-motd-updates-available --force
 	fi
 
-	if [ ${sistema_operativo} = 'Debian' ] && [ ${sistema_operativo} = 'Raspbian' ]; then
+	if [ ${sistema_operativo} = 'Debian' ] || [ ${sistema_operativo} = 'Raspbian' ]; then
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/80-updates-available
 #!/bin/sh
 
@@ -488,7 +488,7 @@ function configurador_backups {
 		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
 #!/bin/bash
 
-duplicity --no-encryption --full-if-older-than 1M --exclude /mnt --exclude /media --exclude /tmp --exclude /proc --exclude /sys --exclude /var/lib/lxcfs / \"/media/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
+duplicity --no-encryption --full-if-older-than 1M --exclude /mnt --exclude /media --exclude /tmp --exclude /proc --exclude /sys --exclude /var/lib/lxcfs / \"file:///media/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
 
 EOS
 "
@@ -569,7 +569,6 @@ EOS
 		fi
 	fi
 }
-
 
 
 ## Funciones 12: configurador_ssh_inverso
@@ -722,7 +721,7 @@ function personalizador_entorno {
 	sed -i -e "s/#alias dir='dir --color=auto'/alias dir='dir --color=auto'/g" ~/.bashrc
 	sed -i -e "s/#alias vdir='vdir --color=auto'/alias vdir='vdir --color=auto'/g" ~/.bashrc
 
-	sed -i -e 's/#export GCC_COLORS/export GCC_COLORS=/g' ~/.bashrc
+	sed -i -e 's/#export GCC_COLORS/export GCC_COLORS/g' ~/.bashrc
 	sed -i -e "s/#alias ll='ls -l'/alias ll='ls -l'/g" ~/.bashrc
 	sed -i -e "s/#alias la='ls -A'/alias la='ls -A'/g" ~/.bashrc
 	sed -i -e "s/#alias l='ls -CF'/alias l='ls -CF'/g" ~/.bashrc
@@ -808,7 +807,7 @@ EOS
 		done
 
 		sudo chmod 777 /media/*
-fi
+	fi
 
 	if [[ ${programas_a_instalar} = *'sshfs'* ]]; then
 		if [ -z "$fstab_servidor_ssh" ]; then
@@ -833,7 +832,7 @@ fi
 			done
 		fi
 
-		for (( i = 0; i<${fstab_num_cifs}; i++ )); do
+		for (( i = 0; i<${fstab_num_ssh}; i++ )); do
 			sudo bash -c "${fstab_usuario_ssh}@${fstab_servidor_ssh}:/home/${fstab_usuario_ssh}/				/media/${fstab_ssh[$i]}				fuse.sshfs	allow_other,IdentityFile=/home/pi/.ssh/${general_nombre_sistema}.pem									0	0"
 
 			sudo mkdir "/media/${fstab_ssh[$i]}"
