@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2019-12-22
-# Version       : 3.0.3
+# Version       : 3.0.4
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -150,7 +150,11 @@ function configurador_motd {
 
 [ -r /etc/lsb-release ] && . /etc/lsb-release
 
-if [ -z \"\\\$DISTRIB_DESCRIPTION\" ] && [ -x /usr/bin/lsb_release ]; then
+[ -r /etc/os-release ] && . /etc/os-release
+
+if [ ! -z \"\\\$PRETTY_NAME\" ]; then
+        DISTRIB_DESCRIPTION=\"\\\$PRETTY_NAME\"
+elif [ -z \"\\\$DISTRIB_DESCRIPTION\" ] && [ -x /usr/bin/lsb_release ]; then
         # Fall back to using the very slow lsb_release utility
         DISTRIB_DESCRIPTION=\\\$(lsb_release -s -d)
 fi
