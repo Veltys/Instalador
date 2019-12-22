@@ -3,8 +3,8 @@
 # Title         : config.sh
 # Description   : Configura el instalador, para que sea autónomo, o lo más autónomo posible
 # Author        : Veltys
-# Date          : 02-10-2019
-# Version       : 1.0.1
+# Date          : 2019-12-22
+# Version       : 1.0.2
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
