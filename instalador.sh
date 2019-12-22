@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2019-12-22
-# Version       : 3.0.4
+# Version       : 3.0.5
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -187,7 +187,9 @@ EOS
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/80-updates-available
 #!/bin/sh
 
-echo \"Hay \\\$(apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+)\\\s\[[\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\]\\\s\\\([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\)? /i) {print \"\\\$1\\\n\"}' | wc -l) paquetes no actualizados\"
+# echo \"Hay \\\$(apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+)\\\s\[[\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\]\\\s\\\([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\)? /i) {print \"\\\$1\\\n\"}' | wc -l) paquetes no actualizados\"
+
+echo \"El comprobador de actualizaciones ha sido temporalmente deshabilitado, debido a su alto consumo de recursos\"
 echo
 EOS
 "
