@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2019-12-22
-# Version       : 3.0.5
+# Date          : 2020-03-03
+# Version       : 3.0.6
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -657,7 +657,7 @@ function instalador_mailers {
 
 		sudo ${gestor_paquetes} install gpgsm
 
-		if [ ${general_sistema} = 0 ]; then
+		if [ ${general_sistema} = 0 ] || [ ${general_sistema} = 1 ]; then
 			sudo bash -c "cat <<EEOS > /usr/local/bin/informe.sh
 #!/usr/bin/env bash
 
@@ -859,7 +859,6 @@ function instalador_crontabs {
 	echo 'Instalando las tareas programadas (crontabs)...'
 
 	if [ ${general_sistema} = 0 ]; then
-
 		crontab -l > crontab.tmp
 
 		cat <<EOS >> crontab.tmp
@@ -886,6 +885,34 @@ EOS
 
 		sudo touch /var/log/health.log
 		sudo chmod 666 /var/log/health.log
+	elif [ ${general_sistema} = 1 ]; then
+		crontab -l > crontab.tmp
+
+		cat <<EOS >> crontab.tmp
+
+#Envío y borrado diarios del registro del estado del sistema
+59                      23      *       *       *       /usr/local/bin/informe.sh
+
+# Aviso en caso de reinicio
+@reboot								/usr/local/bin/reinicio.sh
+EOS
+
+		crontab crontab.tmp
+
+		sudo crontab -l > crontab.tmp
+
+		cat <<EOS >> crontab.tmp
+
+# Registro cada media hora del estado del sistema
+0,30			*		*	*	*	echo "`date`, `uptime -p`, `cat /proc/loadavg`" >> /var/log/health.log
+EOS
+
+		sudo crontab crontab.tmp
+    	rm crontab.tmp
+
+		sudo touch /var/log/health.log
+		sudo chmod 666 /var/log/health.log
+
 	fi
 }
 
