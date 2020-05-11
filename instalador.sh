@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2020-03-03
-# Version       : 3.0.6
+# Date          : 2020-05-12
+# Version       : 3.0.7
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -184,6 +184,7 @@ EOS
 	fi
 
 	if [ ${sistema_operativo} = 'Debian' ] || [ ${sistema_operativo} = 'Raspbian' ]; then
+		# FIXME: Caché para el control de actualizaciones
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/80-updates-available
 #!/bin/sh
 
@@ -499,7 +500,7 @@ duplicity --no-encryption --full-if-older-than 1M --exclude /mnt --exclude /medi
 EOS
 "
 		else
-			sudo ${gestor_paquetes} lftp -y
+			sudo ${gestor_paquetes} install lftp -y
 
 			if [ -z "$backups_servidor_ftp" ]; then
 				echo -n 'Introduzca la dirección del servidor FTP de copias de seguridad: '
