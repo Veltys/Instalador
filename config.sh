@@ -3,8 +3,8 @@
 # Title         : config.sh
 # Description   : Configura el instalador, para que sea autónomo, o lo más autónomo posible
 # Author        : Veltys
-# Date          : 2019-12-22
-# Version       : 1.0.2
+# Date          : 2020-05-12
+# Version       : 1.1.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -28,6 +28,11 @@ general_nombre_sistema=''
 # s ➡ Sí
 # n ➡ No
 contrasenyas_contrasenya=''
+
+# Configurar IPv6
+# s ➡ Sí
+# n ➡ No
+ipv6_ipv6=''
 
 # Instalar un cortafuegos:
 # s ➡ Sí
