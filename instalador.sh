@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2020-05-12
-# Version       : 3.0.8
+# Version       : 3.1.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -343,7 +343,23 @@ function limpiador {
 }
 
 
-## Funciones 8: configurador_cortafuegos
+## Funciones 8: configurador_ipv6
+function configurador_ipv6 {
+	if [ -z "$ipv6_ipv6" ]; then
+		echo -n '¿Se necesitará activar el soporte para IPv6? [S/n]: '
+		read ipv6_ipv6
+
+		ipv6_ipv6=${ipv6_ipv6:0:1}
+		ipv6_ipv6=${ipv6_ipv6,,}
+	fi
+
+	if [ ${ipv6_ipv6} != 'n' ]; then
+		sudo sed -i -e 's/net.ipv6.conf.all.disable_ipv6 = 1/net.ipv6.conf.all.disable_ipv6 = 0/g' /etc/sysctl.conf
+	fi
+}
+
+
+## Funciones 9: configurador_cortafuegos
 function configurador_cortafuegos {
 	if [ -z "$cortafuegos_cortafuegos" ]; then
 		echo -n '¿Se necesitará instalar un cortafuegos? [S/n]: '
@@ -367,7 +383,7 @@ function configurador_cortafuegos {
 }
 
 
-## Funciones 9: actualizador_dns
+## Funciones 10: actualizador_dns
 function actualizador_dns {
 	if [ -z "$dns_dns" ]; then
 		echo -n '¿Se asignará un DNS dinámico? [S/n]: '
@@ -468,7 +484,7 @@ EOS
 }
 
 
-## Funciones 10: configurador_backups
+## Funciones 11: configurador_backups
 function configurador_backups {
 	if [ -z "$backups_backups" ]; then
 		echo -n '¿Se realizarán copias de seguridad? [S/n]: '
@@ -546,7 +562,7 @@ EOS
 }
 
 
-## Funciones 11: configurador_internet_movil
+## Funciones 12: configurador_internet_movil
 function configurador_internet_movil {
 	if [ ${general_sistema} = 0 ]; then
 		if [ -z "$internet_movil_internet_movil" ]; then
@@ -578,7 +594,7 @@ EOS
 }
 
 
-## Funciones 12: configurador_ssh_inverso
+## Funciones 13: configurador_ssh_inverso
 function configurador_ssh_inverso {
 	if [ ${general_sistema} = 0 ]; then
 		if [ -z "$ssh_inverso_ssh_inverso" ]; then
@@ -625,7 +641,7 @@ EOS
 }
 
 
-## Funciones 13: configurador_contador_linux
+## Funciones 14: configurador_contador_linux
 function configurador_contador_linux {
 	echo -n '¿Se debe instalar el script del contador LinuxCounter? [S/n]: '
 	read contador_linux_contador
@@ -651,7 +667,7 @@ function configurador_contador_linux {
 }
 
 
-## Funciones 14: instalador_mailers
+## Funciones 15: instalador_mailers
 function instalador_mailers {
 	if [[ ${programas_a_instalar} = *'mutt'* ]]; then
 		echo 'Instalando mailers...'
@@ -699,7 +715,7 @@ EEOS
 }
 
 
-## Funciones 15: instalador_claves_ssh
+## Funciones 16: instalador_claves_ssh
 function instalador_claves_ssh {
 	echo 'Obteniendo las claves públicas para el servidor SSH...'
 
@@ -720,7 +736,7 @@ function instalador_claves_ssh {
 }
 
 
-## Funciones 16: personalizador_entorno
+## Funciones 17: personalizador_entorno
 function personalizador_entorno {
 	echo 'Estableciendo personalizaciones del entorno...'
 
@@ -769,7 +785,7 @@ EOS
 }
 
 
-## Funciones 17: configurador_fstab
+## Funciones 18: configurador_fstab
 function configurador_fstab {
 	echo 'Añadiendo sistemas de archivos remotos a /etc/fstab...'
 
@@ -855,7 +871,7 @@ EOS
 }
 
 
-## Funciones 18: instalador_crontabs
+## Funciones 19: instalador_crontabs
 function instalador_crontabs {
 	echo 'Instalando las tareas programadas (crontabs)...'
 
@@ -918,7 +934,7 @@ EOS
 }
 
 
-## Funciones 19: arreglador_hdmi
+## Funciones 20: arreglador_hdmi
 function arreglador_hdmi {
 	if [ ${general_sistema} = 0 ]; then
 		sudo bash -c "cat <<EOS >> /boot/config.txt
@@ -931,7 +947,7 @@ EOS
 }
 
 
-## Funciones 20: configurador_locales
+## Funciones 21: configurador_locales
 function configurador_locales {
 	if [ ${general_sistema} != 0 ]; then
 		sudo ${gestor_paquetes} install manpages-es manpages-es-extra
@@ -941,7 +957,7 @@ function configurador_locales {
 }
 
 
-## Funciones 21: instalador_kde
+## Funciones 22: instalador_kde
 function instalador_kde {
 	if [ ${general_sistema} != 0 ]; then
 		if [ ${sistema_operativo} = 'Debian' ]; then
@@ -991,6 +1007,9 @@ configurador_ntp
 
 ## Desinstalador de paquetes no necesarios
 limpiador
+
+## Configurador del soporte de IPv6
+configurador_ipv6
 
 ## Configurador del cortafuegos
 configurador_cortafuegos
