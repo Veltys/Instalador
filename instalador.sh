@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2020-05-12
-# Version       : 3.0.7
+# Version       : 3.0.8
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -957,7 +957,7 @@ function instalador_kde {
 			if [ ${kde_kde} = 's' ]; then
 				echo 'Instalando KDE...'
 
-				sudo ${gestor_paquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen
+				sudo ${gestor_paquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen xorg
 
 				# Componente gráfico del cortafuegos, instalable en el caso de tener KDE
 				if [ ${cortafuegos_cortafuegos} != 'n' ]; then
