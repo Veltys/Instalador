@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2020-05-12
-# Version       : 3.1.0
+# Date          : 2020-07-06
+# Version       : 3.1.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -558,6 +558,9 @@ EOS
 
 		sudo crontab crontab.tmp
     	rm crontab.tmp
+
+		# TODO: clean_old_backups.sh
+
 	fi
 }
 
@@ -672,18 +675,18 @@ function instalador_mailers {
 	if [[ ${programas_a_instalar} = *'mutt'* ]]; then
 		echo 'Instalando mailers...'
 
-		sudo ${gestor_paquetes} install gpgsm
+		sudo ${gestor_paquetes} install gpgsm -y
 
 		if [ ${general_sistema} = 0 ] || [ ${general_sistema} = 1 ]; then
 			sudo bash -c "cat <<EEOS > /usr/local/bin/informe.sh
 #!/usr/bin/env bash
 
-cat <<EOS | mutt -s \"\\\$( whoami )@\\\$(uname -n): informe diario\" ***REMOVED***
-Informe diario de \\\$(uname -n), correspondiente al \\\$( date ):
+cat <<EOS | mutt -s \"\\\$(whoami)@\\\$(uname -n): informe diario\" ***REMOVED***
+Informe diario de \\\$(uname -n), correspondiente al \\\$(date):
 
-\\\$( cat /var/log/health.log )
+\\\$(cat /var/log/health.log)
 
-\\\$( /usr/local/bin/grafico_temperaturas.sh /var/log/health.log )
+\\\$(/usr/local/bin/grafico_temperaturas.sh /var/log/health.log)
 
 EOS
 
@@ -698,8 +701,8 @@ EEOS
 
 sleep 60
 
-cat <<EOS | mutt -s \"\\\$( whoami )@\\\$(uname -n): informe especial\" ***REMOVED***
-Informe especial de \\\$(uname -n), generado el \\\$( date ):
+cat <<EOS | mutt -s \"\\\$(whoami)@\\\$(uname -n): informe especial\" ***REMOVED***
+Informe especial de \\\$(uname -n), generado el \\\$(date):
 
 \\\$(uname -n) se ha reiniciado. Si no ha sido intencional este reinicio, es posible que haya habido un corte de luz.
 
@@ -823,6 +826,7 @@ EOS
 			done
 		fi
 
+		# FIXME: Esto aún no pirula
 		for (( i = 0; i<${fstab_num_cifs}; i++ )); do
 			sudo bash -c "echo \\\"//${fstab_servidor_smb}/${fstab_cifs[$i]}// /\\040}			/media/${fstab_cifs[$i]}// /\\040}			cifs		credentials=/root/.smbcredentials_${fstab_usuario_smb,,},iocharset=utf8,nofail,file_mode=0777,dir_mode=0777,vers=3.0,x-systemd.automount	0	0"
 
@@ -855,6 +859,7 @@ EOS
 			done
 		fi
 
+		# FIXME: Esto aún no pirula
 		for (( i = 0; i<${fstab_num_ssh}; i++ )); do
 			sudo bash -c "${fstab_usuario_ssh}@${fstab_servidor_ssh}:/home/${fstab_usuario_ssh}/				/media/${fstab_ssh[$i]}				fuse.sshfs	allow_other,IdentityFile=/home/pi/.ssh/${general_nombre_sistema}.pem									0	0"
 
@@ -908,10 +913,10 @@ EOS
 		cat <<EOS >> crontab.tmp
 
 #Envío y borrado diarios del registro del estado del sistema
-59                      23      *       *       *       /usr/local/bin/informe.sh
+59						23	*	*	*	/usr/local/bin/informe.sh
 
 # Aviso en caso de reinicio
-@reboot								/usr/local/bin/reinicio.sh
+@reboot							/usr/local/bin/reinicio.sh
 EOS
 
 		crontab crontab.tmp
@@ -950,7 +955,7 @@ EOS
 ## Funciones 21: configurador_locales
 function configurador_locales {
 	if [ ${general_sistema} != 0 ]; then
-		sudo ${gestor_paquetes} install manpages-es manpages-es-extra
+		sudo ${gestor_paquetes} install manpages-es manpages-es-extra -y
 		sudo dpkg-reconfigure locales
 		export LANG=es_ES.UTF-8
 	fi
@@ -973,7 +978,7 @@ function instalador_kde {
 			if [ ${kde_kde} = 's' ]; then
 				echo 'Instalando KDE...'
 
-				sudo ${gestor_paquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen xorg
+				sudo ${gestor_paquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen xorg -y
 
 				# Componente gráfico del cortafuegos, instalable en el caso de tener KDE
 				if [ ${cortafuegos_cortafuegos} != 'n' ]; then
