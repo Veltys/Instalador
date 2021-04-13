@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 3.4.0
+# Version       : 3.4.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -184,7 +184,7 @@ EOS
 	fi
 
 	if [ ${sistema_operativo} = 'Debian' ] || [ ${sistema_operativo} = 'Raspbian' ]; then
-		# FIXME: Caché para el control de actualizaciones
+# FIXME: Caché para el control de actualizaciones
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/80-updates-available
 #!/bin/sh
 
@@ -533,7 +533,7 @@ EOS
 		sudo crontab crontab.tmp
     	rm crontab.tmp
 
-		# TODO: clean_old_backups.sh
+# TODO: clean_old_backups.sh
 
 	fi
 }
@@ -688,7 +688,7 @@ EEOS
 		fi
 	fi
 
-	# FIXME: Añadir el resto
+# FIXME: Añadir el resto
 }
 
 
@@ -709,7 +709,7 @@ function instalador_claves_ssh {
 
 	mv authorized_keys ~/.ssh/
 
-	# TODO: Instalar claves propias también
+# TODO: Instalar claves propias también
 }
 
 
@@ -833,7 +833,7 @@ EOS
 			done
 		fi
 
-		# FIXME: Esto aún no pirula
+# FIXME: Esto aún no pirula
 		for (( i = 0; i<${fstab_num_ssh}; i++ )); do
 			sudo bash -c "${fstab_usuario_ssh}@${fstab_servidor_ssh}:/home/${fstab_usuario_ssh}/				/media/${fstab_ssh[$i]}				fuse.sshfs	allow_other,IdentityFile=/home/pi/.ssh/${general_nombre_sistema}.pem									0	0"
 
