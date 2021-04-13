@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 4.0.0
+# Version       : 4.1.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -685,37 +685,11 @@ function instalador_mailers {
 		fi
 
 		if [ ${general_sistema} = 0 ] || [ ${general_sistema} = 1 ]; then
-			sudo bash -c "cat <<EEOS > /usr/local/bin/informe.sh
-#!/usr/bin/env bash
-
-cat <<EOS | mutt -s \"\\\$(whoami)@\\\$(uname -n): informe diario\" ***REMOVED***
-Informe diario de \\\$(uname -n), correspondiente al \\\$(date):
-
-\\\$(cat /var/log/health.log)
-
-\\\$(/usr/local/bin/grafico_temperaturas.sh /var/log/health.log)
-
-EOS
-
-truncate -s 0 /var/log/health.log
-EEOS
-"
+			sudo cp ./mailers/informe.sh /usr/local/bin/informe.sh
 
 			sudo chmod a+x /usr/local/bin/informe.sh
 
-			sudo bash -c "cat <<EEOS > /usr/local/bin/reinicio.sh
-#!/usr/bin/env bash
-
-sleep 60
-
-cat <<EOS | mutt -s \"\\\$(whoami)@\\\$(uname -n): informe especial\" ***REMOVED***
-Informe especial de \\\$(uname -n), generado el \\\$(date):
-
-\\\$(uname -n) se ha reiniciado. Si no ha sido intencional este reinicio, es posible que haya habido un corte de luz.
-
-EOS
-EEOS
-"
+			sudo cp ./mailers/reinicio.sh /usr/local/bin/reinicio.sh
 
 			sudo chmod a+x /usr/local/bin/reinicio.sh
 		fi
