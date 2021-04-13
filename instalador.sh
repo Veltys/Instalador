@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 3.7.0
+# Version       : 3.8.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -1196,14 +1196,6 @@ configurador_fstab
 
 ## Instalación de crontabs
 instalador_crontabs
-
-# TODO: Instalar y configurar el cliente VPN (PPP)
-# sudo nano /etc/ppp/peers/Plus
-# sudo nano /etc/ppp/ip-up.d/000updateroutingtable
-# sudo chmod a+x /etc/ppp/ip-up.d/000updateroutingtable
-
-## Arreglador del ahorro de energía del HDMI
-arreglador_hdmi
 
 ## Configurador de las locales
 configurador_locales
