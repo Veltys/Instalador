@@ -59,6 +59,9 @@ dns_dominios=''
 # Realizar copias de seguridad
 backups_backups=''
 
+# Punto de montaje donde se almacenarán las copias de seguridad
+backups_montaje=''
+
 # Dirección del servidor FTP de copias de seguridad
 backups_servidor_ftp=''
 
