@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2020-07-06
-# Version       : 3.1.1
+# Date          : 2021-04-13
+# Version       : 3.2.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -507,49 +507,18 @@ function configurador_backups {
 			*) backups_tipo_sistema='Otros' ;;
 		esac
 
-		if [[ ${programas_a_instalar} = *'cifs-utils'* ]]; then
-			if [ -z "$backups_montaje" ]; then
-				echo -n 'Punto de montaje donde se almacenarán las copias de seguridad: '
-				read backups_backups
-			fi
+		if [ -z "$backups_montaje" ]; then
+			echo -n 'Punto de montaje donde se almacenarán las copias de seguridad: '
+			read backups_backups
+		fi
 
-			sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
+		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
 #!/bin/bash
 
 duplicity --no-encryption --full-if-older-than 1M --exclude /mnt --exclude /media --exclude /tmp --exclude /proc --exclude /sys --exclude /var/lib/lxcfs / \"file:///${backups_montaje}/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
 
 EOS
 "
-		else
-			sudo ${gestor_paquetes} install lftp -y
-
-			if [ -z "$backups_servidor_ftp" ]; then
-				echo -n 'Introduzca la dirección del servidor FTP de copias de seguridad: '
-				read backups_servidor_ftp
-			fi
-
-			if [ -z "$backups_usuario_ftp" ]; then
-				echo -n 'Introduzca el usuario del servidor FTP de copias de seguridad: '
-				read backups_usuario_ftp
-			fi
-
-			if [ -z "$backups_contrasenya_ftp" ]; then
-				echo -n 'Introduzca la contraseña del servidor FTP de copias de seguridad: '
-				read backups_contrasenya_ftp
-			fi
-
-		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
-#!/bin/bash
-
-export FTP_PASSWORD=\"${backups_contrasenya_ftp}=\"
-
-duplicity --no-encryption --full-if-older-than 1M --exclude /mnt --exclude /media --exclude /tmp --exclude /proc --exclude /sys --exclude /var/lib/lxcfs / ftp://${backups_usuario_ftp}@${backups_servidor_ftp}/${backups_tipo_sistema}/${general_nombre_sistema} >> /var/log/duplicity.log
-
-unset FTP_PASSWORD
-
-EOS
-"
-		fi
 
 		sudo chmod u+x /usr/local/bin/backup.sh
 
