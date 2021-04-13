@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 3.3.0
+# Version       : 3.4.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -306,7 +306,7 @@ echo \"\\\${GREEN}
  ~ .~ (   ) ~. ~  \\\${DARKGREY}Cargas de trabajo........: \\\${BLUE}\\\${one}, \\\${five}, \\\${fifteen} (1, 5, 15 min)\\\${RED}
   (  : '~' :  )   \\\${DARKGREY}Procesos en ejecución....: \\\${BLUE}\\\`ps ax | wc -l | tr -d \" \"\\\`\\\${RED}
    '~ .~~~. ~'    \\\${DARKGREY}Direcciones IP...........: \\\${BLUE}\\\`ip a | grep glo | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\` y \\\`wget -q -O - http://icanhazip.com/ | tail\\\`\\\${RED}
-       '~'        \\\${DARKGREY}Temperatura del sistema..: \\\${BLUE}\\\`/opt/vc/bin/vcgencmd measure_temp | sed -r -e \"s/^temp=([0-9]*)\\\.([0-9])'C$/\1,\2 C/\"\\\`\\\${NC}
+       '~'        \\\${DARKGREY}Temperatura del sistema..: \\\${BLUE}\\\`/usr/bin/vcgencmd measure_temp | sed -r -e \"s/^temp=([0-9]*)\\\.([0-9])'C$/\1,\2 C/\"\\\`\\\${NC}
 \"
 EOS
 "
@@ -753,9 +753,9 @@ EOS
 
 	if [ ${general_sistema} = 0 ]; then
 		cat <<EOS >> ~/.bash_aliases
-alias apagar_pantalla='/opt/vc/bin/vcgencmd display_power 0'
-alias encender_pantalla='/opt/vc/bin/vcgencmd display_power 1'
-alias temperatura='/opt/vc/bin/vcgencmd measure_temp'
+alias apagar_pantalla='/usr/bin/vcgencmd display_power 0'
+alias encender_pantalla='/usr/bin/vcgencmd display_power 1'
+alias temperatura='/usr/bin/vcgencmd measure_temp'
 alias arreglar_iconos='sudo gdk-pixbuf-query-loaders --update-cache && sudo shutodown -r now'
 EOS
 	fi
@@ -873,7 +873,7 @@ EOS
 		cat <<EOS >> crontab.tmp
 
 # Registro cada media hora de las temperaturas del sistema
-0,30			*		*	*	*	echo "\`date\`, \`uptime -p\`, \`/opt/vc/bin/vcgencmd measure_temp\`, \`cat /proc/loadavg\`" >> /var/log/health.log
+0,30			*		*	*	*	echo "\`date\`, \`uptime -p\`, \`/usr/bin/vcgencmd measure_temp\`, \`cat /proc/loadavg\`" >> /var/log/health.log
 EOS
 
 		sudo crontab crontab.tmp
