@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 3.2.0
+# Version       : 3.3.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -913,20 +913,7 @@ EOS
 }
 
 
-## Funciones 20: arreglador_hdmi
-function arreglador_hdmi {
-	if [ ${general_sistema} = 0 ]; then
-		sudo bash -c "cat <<EOS >> /boot/config.txt
-
-# Enable idle HDMI poweroff
-hdmi_blanking=1
-EOS
-"
-	fi
-}
-
-
-## Funciones 21: configurador_locales
+## Funciones 20: configurador_locales
 function configurador_locales {
 	if [ ${general_sistema} != 0 ]; then
 		sudo ${gestor_paquetes} install manpages-es manpages-es-extra -y
@@ -936,7 +923,7 @@ function configurador_locales {
 }
 
 
-## Funciones 22: instalador_kde
+## Funciones 21: instalador_kde
 function instalador_kde {
 	if [ ${general_sistema} != 0 ]; then
 		if [ ${sistema_operativo} = 'Debian' ]; then
