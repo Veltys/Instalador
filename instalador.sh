@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 3.4.2
+# Version       : 3.5.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -767,85 +767,100 @@ function configurador_fstab {
 	echo 'Añadiendo sistemas de archivos remotos a /etc/fstab...'
 
 	if [[ ${programas_a_instalar} = *'cifs-utils'* ]]; then
-		if [ -z "$fstab_servidor_smb" ]; then
-			echo -n 'Introduzca la dirección del servidor SMB: '
-			read fstab_servidor_smb
+		if [ -z "$fstab_num_servidores_smb" ]; then
+			echo -n '¿Cuántos servidores SMB distintos se van a montar?: '
+			read fstab_num_servidores_smb
 		fi
 
-		if [ -z "$fstab_usuario_smb" ]; then
-			echo -n 'Introduzca el usuario del servidor SMB: '
-			read fstab_usuario_smb
-		fi
+		for (( i = 0; i<${fstab_num_servidores_smb}; i++ )); do
+			if [ -z "${fstab_servidores_smb[$i]}" ]; then
+				echo -n 'Introduzca la dirección del servidor SMB nº ' $(( i+1 )) ': '
+				read fstab_servidores_smb[$i]
+			fi
 
-		if [ -z "$fstab_contrasenya_smb" ]; then
-			echo -n 'Introduzca la contraseña del servidor SMB: '
-			read fstab_contrasenya_smb
-		fi
+			if [ -z "${fstab_usuarios_smb[$i]}" ]; then
+				echo -n 'Introduzca el usuario del servidor SMB nº ' $(( i+1 )) ': '
+				read fstab_usuarios_smb[$i]
+			fi
 
-		sudo bash -c "cat <<EOS > /root/.smbcredentials_${fstab_usuario_smb,,}
-username=${fstab_usuario_smb}
-password=${fstab_contrasenya_smb}
+			if [ -z "${fstab_contrasenyas_smb[$i]}" ]; then
+				echo -n 'Introduzca el la contraseña del servidor SMB nº ' $(( i+1 )) ': '
+				read fstab_contrasenyas_smb[$i]
+			fi
+
+			sudo bash -c "cat <<EOS > /root/.smbcredentials_${fstab_usuarios_smb[$i],,}
+username=${fstab_usuarios_smb[$i]}
+password=${fstab_contrasenyas_smb[$i]}
 EOS
 "
 
-		if [ -z "$fstab_num_cifs" ]; then
-			echo -n '¿Cuántas unidades CIFS se van a montar?: '
-			read fstab_num_cifs
-		fi
+			if [ -z "${fstab_num_cifs[$i]}" ]; then
+				echo -n '¿Cuántas unidades CIFS se van a montar en el servidor SSH nº ' $(( i+1 )) '?: '
+				read fstab_num_cifs[$i]
+			fi
 
-		if [ -z "$fstab_cifs" ]; then
-			for (( i = 0; i<${fstab_num_cifs}; i++ )); do
-				echo -n 'Introduzca la unidad nº' $(( i+1 ))': '
-				read fstab_cifs[$i]
+			if [ -v "$fstab_cifs" ]; then
+				for (( j = 0; j<${fstab_num_cifs[$i]}; j++ )); do
+					echo -n 'Introduzca el nombre de la unidad nº' $(( j+1 ))' correspondiente al servidor SMB nº ' $(( i+1 )) ': '
+					read fstab_cifs[$i,$j]
+				done
+			fi
+
+			for (( j = 0; j<${fstab_num_cifs[$i]}; j++ )); do
+				sudo bash -c "echo \"//${fstab_servidor_smb[$i]}/${fstab_cifs[$i,$j]// /\\040}			/media/${fstab_cifs[$i,$j]// /\\040}			cifs		credentials=/root/.smbcredentials_${fstab_usuarios_smb[$i],,},iocharset=utf8,nofail,file_mode=0777,dir_mode=0777,vers=3.0,x-systemd.automount	0	0\" >> /etc/fstab"
+
+				sudo mkdir "/media/${fstab_cifs[$i]}"
 			done
-		fi
-
-		# FIXME: Esto aún no pirula
-		for (( i = 0; i<${fstab_num_cifs}; i++ )); do
-			sudo bash -c "echo \\\"//${fstab_servidor_smb}/${fstab_cifs[$i]}// /\\040}			/media/${fstab_cifs[$i]}// /\\040}			cifs		credentials=/root/.smbcredentials_${fstab_usuario_smb,,},iocharset=utf8,nofail,file_mode=0777,dir_mode=0777,vers=3.0,x-systemd.automount	0	0"
-
-			sudo mkdir "/media/${fstab_cifs[$i]}"
 		done
 
 		sudo chmod 777 /media/*
 	fi
 
 	if [[ ${programas_a_instalar} = *'sshfs'* ]]; then
-		if [ -z "$fstab_servidor_ssh" ]; then
-			echo -n 'Introduzca la dirección del servidor SSH: '
-			read fstab_servidor_ssh
+		if [ -z "$fstab_num_servidores_ssh" ]; then
+			echo -n '¿Cuántos servidores SSH distintos se van a montar?: '
+			read fstab_num_servidores_ssh
 		fi
 
-		if [ -z "$fstab_usuario_ssh" ]; then
-			echo -n 'Introduzca el usuario del servidor SSH: '
-			read fstab_usuario_ssh
-		fi
+		for (( i = 0; i<${fstab_num_servidores_ssh}; i++ )); do
+			if [ -z "${fstab_servidores_ssh[$i]}" ]; then
+				echo -n 'Introduzca la dirección del servidor SSH nº ' $(( i+1 )) ': '
+				read fstab_servidores_ssh[$i]
+			fi
 
-		if [ -z "$fstab_num_ssh" ]; then
-			echo -n '¿Cuántas unidades SSHFS se van a montar?: '
-			read fstab_num_ssh
-		fi
+			if [ -z "${fstab_usuarios_ssh[$i]}" ]; then
+				echo -n 'Introduzca el usuario del servidor SSH nº ' $(( i+1 )) ': '
+				read fstab_usuarios_ssh[$i]
+			fi
 
-		if [ -z "$fstab_ssh" ]; then
-			for (( i = 0; i<${fstab_num_ssh}; i++ )); do
-				echo -n 'Introduzca la unidad nº' $(( i+1 ))': '
-				read fstab_ssh[$i]
+			if [ -z "${fstab_num_ssh[$i]}" ]; then
+				echo -n '¿Cuántas unidades SSHFS se van a montar en el servidor SSH nº ' $(( i+1 )) '?: '
+				read fstab_num_ssh[$i]
+			fi
+
+			if [ -v "$fstab_ssh" ]; then
+				for (( j = 0; j<${fstab_num_ssh[$i]}; j++ )); do
+					echo -n 'Introduzca el nombre de la unidad nº' $(( j+1 ))' correspondiente al servidor SSH nº ' $(( i+1 )) ': '
+					read fstab_ssh[$i,$j]
+
+					echo -n 'Introduzca la ruta en el servidor de la unidad nº' $(( j+1 ))' correspondiente al servidor SSH nº ' $(( i+1 )) ': '
+					read fstab_ruta_ssh[$i,$j]
+				done
+			fi
+
+			for (( j = 0; j<${fstab_num_ssh[$i]}; j++ )); do
+				sudo bash -c "echo \"${fstab_usuario_ssh[$i]}@${fstab_servidor_ssh[$i]}:${fstab_ruta_ssh[$i,$j]}/				/media/${fstab_ssh[$i,$j]}				fuse.sshfs	allow_other,IdentityFile=/home/${quiensoy}/.ssh/id_rsa										0	0\" >> /etc/fstab"
+
+				sudo mkdir "/media/${fstab_ssh[$i $j]}"
 			done
-		fi
-
-# FIXME: Esto aún no pirula
-		for (( i = 0; i<${fstab_num_ssh}; i++ )); do
-			sudo bash -c "${fstab_usuario_ssh}@${fstab_servidor_ssh}:/home/${fstab_usuario_ssh}/				/media/${fstab_ssh[$i]}				fuse.sshfs	allow_other,IdentityFile=/home/pi/.ssh/${general_nombre_sistema}.pem									0	0"
-
-			sudo mkdir "/media/${fstab_ssh[$i]}"
 		done
 
 		sudo chmod 777 /media/*
 	fi
 
 	if [ ${general_sistema} = 0 ]; then
-		echo 'En una Raspberry Pi, es necesario configurar manualmente el archivo de intercambio en /etc/fstab'
-		echo 'No olvide reiniciar y configurarlo'
+		echo 'En una Raspberry Pi, es necesario acabar de configurar manualmente el archivo de intercambio en /etc/fstab'
+		echo 'No olvide configurarlo y reiniciar'
 	fi
 }
 
