@@ -4,7 +4,7 @@
 # Description   : Configura el instalador, para que sea autónomo, o lo más autónomo posible
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 1.4.0
+# Version       : 1.5.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -38,6 +38,9 @@ ipv6_ipv6=''
 # s ➡ Sí
 # n ➡ No
 cortafuegos_cortafuegos=''
+
+# Reglas adicionales para el cortafuegos
+cortafuegos_reglas[0]=''
 
 # Asignar DNS dinámico
 # s ➡ Sí
