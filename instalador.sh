@@ -508,10 +508,15 @@ function configurador_backups {
 		esac
 
 		if [[ ${programas_a_instalar} = *'cifs-utils'* ]]; then
-		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
+			if [ -z "$backups_montaje" ]; then
+				echo -n 'Punto de montaje donde se almacenarán las copias de seguridad: '
+				read backups_backups
+			fi
+
+			sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
 #!/bin/bash
 
-duplicity --no-encryption --full-if-older-than 1M --exclude /mnt --exclude /media --exclude /tmp --exclude /proc --exclude /sys --exclude /var/lib/lxcfs / \"file:///media/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
+duplicity --no-encryption --full-if-older-than 1M --exclude /mnt --exclude /media --exclude /tmp --exclude /proc --exclude /sys --exclude /var/lib/lxcfs / \"file:///${backups_montaje}/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
 
 EOS
 "
