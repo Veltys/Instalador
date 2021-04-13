@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 3.10.0
+# Version       : 3.11.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -41,17 +41,17 @@ function configurador_general {
 		'r') general_sistema=0
 			 echo 'una Raspberry Pi'
 
-			 programas=('cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
+			 programas=('apache2' 'libapache2-mod-php' 'php' 'cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
 
 		'v') general_sistema=1
 			 echo 'un servidor VPS'
 
-			 programas=('cifs-utils' 'elinks'           'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
+			 programas=('apache2' 'libapache2-mod-php' 'php' 'cifs-utils' 'elinks'           'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
 
 		*  ) general_sistema=2
 			 echo 'otro tipo de sistema'
 
-			 programas=('cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
+			 programas=('apache2' 'libapache2-mod-php' 'php' 'cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
 	esac
 
 	if [ -z "$general_nombre_sistema" ]; then
