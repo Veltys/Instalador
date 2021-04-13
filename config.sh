@@ -4,7 +4,7 @@
 # Description   : Configura el instalador, para que sea autónomo, o lo más autónomo posible
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 1.3.0
+# Version       : 1.4.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -67,6 +67,30 @@ internet_movil_internet_movil=''
 
 # Túnel SSH inverso
 ssh_inverso_ssh_inverso=''
+
+# Dirección de correo electrónico
+mailers_correo='correo@gmail.com'
+
+# Usuario IMAP
+mailers_usuario_imap='correo@gmail.com'
+
+# Contraseña IMAP
+mailers_contrasenya_imap=''
+
+# Carpeta IMAP
+mailers_folder='imaps://imap.gmail.com:993'
+
+# Archivo de cola IMAP
+mailers_spoolfile='+INBOX'
+
+# Carpeta de borradores IMAP
+mailers_postponed='+[Gmail]/Drafts'
+
+# URL SMTP
+mailer_smtp_url='smtp://correo@smtp.gmail.com:587/'
+
+# Contraseña SMTP
+mailer_contrasenya_smtp=''
 
 # URL del servidor HTTP con las claves SSH
 claves_ssh_url=''

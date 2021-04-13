@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 3.8.0
+# Version       : 3.9.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -857,6 +857,21 @@ EEOS
 
 			sudo chmod a+x /usr/local/bin/reinicio.sh
 		fi
+
+		cat <<EOS >> ~/.muttrc
+set from = "${mailers_correo}"
+set realname = "${general_nombre_sistema}"
+set imap_user = "${mailers_usuario_imap}"
+set imap_pass = "${mailers_contrasenya_imap}"
+set folder = "${mailers_folder}"
+set spoolfile = "${mailers_spoolfile}"
+set postponed ="${mailers_postponed}"
+set header_cache = ~/.mutt/cache/headers
+set message_cachedir = ~/.mutt/cache/bodies
+set certificate_file = ~/.mutt/certificates
+set smtp_url = "${mailer_smtp_url}"
+set smtp_pass = "${mailers_contrasenya_smtp}"
+EOS
 	fi
 }
 
