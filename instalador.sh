@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 3.11.0
+# Version       : 3.11.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -379,6 +379,9 @@ function configurador_cortafuegos {
 
 		if [ ${general_sistema} = 0 ]; then
 			sudo ufw allow from any to any port 5900 proto tcp comment 'Servidor VNC'
+		fi
+
+		if [[ ${programas_a_instalar} = *'apache2'* ]]; then
 			sudo ufw allow from any to any port 80,443 proto tcp comment 'Servidor Apache httpd'
 		fi
 
