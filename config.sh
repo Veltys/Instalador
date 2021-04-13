@@ -3,8 +3,8 @@
 # Title         : config.sh
 # Description   : Configura el instalador, para que sea autónomo, o lo más autónomo posible
 # Author        : Veltys
-# Date          : 2020-05-12
-# Version       : 1.1.0
+# Date          : 2021-04-13
+# Version       : 1.2.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -61,15 +61,6 @@ backups_backups=''
 
 # Punto de montaje donde se almacenarán las copias de seguridad
 backups_montaje=''
-
-# Dirección del servidor FTP de copias de seguridad
-backups_servidor_ftp=''
-
-# Usuario del servidor FTP de copias de seguridad
-backups_usuario_ftp=''
-
-# Contraseña del servidor FTP de copias de seguridad
-backups_contrasenya_ftp=''
 
 # Gestionar una conexión a Internet con un módem USB
 internet_movil_internet_movil=''
