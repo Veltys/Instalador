@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 4.1.1
+# Version       : 4.2.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -480,21 +480,6 @@ EOS
 		sudo chmod 666 /var/log/dynhost.log
 
 		/usr/local/bin/actualizador.sh
-
-		echo 'Instalando la tarea programada (crontab)...'
-
-		crontab -l > crontab.tmp
-
-		cat <<EOS >> crontab.tmp
-
-# Actualización de la IP dinámica
-@reboot								/usr/local/bin/actualizador.sh
-0,30			*		*	*	*	/usr/local/bin/actualizador.sh
-
-EOS
-
-		crontab crontab.tmp
-    	rm crontab.tmp
 	fi
 }
 
@@ -546,22 +531,6 @@ EOS
 "
 
 		sudo chmod u+x /usr/local/bin/clean_old_backups.sh
-
-		sudo crontab -l | tee crontab.tmp > /dev/null
-
-		sudo bash -c "cat <<EOS >> crontab.tmp
-# Copia de seguridad semanal
-0			5		*	*	7	/usr/local/bin/backup.sh
-
-
-# Limpieza de copias de seguridad antiguas mensual
-0			10		1	*	*	/usr/local/bin/clean_old_backups.sh
-
-EOS
-"
-
-		sudo crontab crontab.tmp
-    	rm crontab.tmp
 	fi
 }
 
@@ -889,7 +858,34 @@ EOS
 function instalador_crontabs {
 	echo 'Instalando las tareas programadas (crontabs)...'
 
-	if [ ${general_sistema} = 0 ]; then
+	if [ "${dns_dns}" != 'n' ]; then
+		crontab -l > crontab.tmp
+
+		cat <<EOS >> crontab.tmp
+
+# Actualización de la IP dinámica
+@reboot								/usr/local/bin/actualizador.sh
+0,30			*		*	*	*	/usr/local/bin/actualizador.sh
+
+EOS
+	fi
+
+	if [ "${backups_backups}" != 'n' ]; then
+		sudo crontab -l | tee crontab_root.tmp > /dev/null
+
+		sudo bash -c "cat <<EOS >> crontab_root.tmp
+# Copia de seguridad semanal
+0			5		*	*	7	/usr/local/bin/backup.sh
+
+
+# Limpieza de copias de seguridad antiguas mensual
+0			10		1	*	*	/usr/local/bin/clean_old_backups.sh
+
+EOS
+"
+	fi
+
+	if [ ${general_sistema} = 0 ] || [ ${general_sistema} = 1 ]; then
 		crontab -l > crontab.tmp
 
 		cat <<EOS >> crontab.tmp
@@ -901,49 +897,32 @@ function instalador_crontabs {
 @reboot								/usr/local/bin/reinicio.sh
 EOS
 
-		crontab crontab.tmp
+		sudo crontab -l | tee crontab_root.tmp > /dev/null
 
-		sudo crontab -l | tee crontab.tmp > /dev/null
-
-		cat <<EOS >> crontab.tmp
+		cat <<EOS >> crontab_root.tmp
 
 # Registro cada media hora de las temperaturas del sistema
-0,30			*		*	*	*	echo "\`date\`, \`uptime -p\`, \`/usr/bin/vcgencmd measure_temp\`, \`cat /proc/loadavg\`" >> /var/log/health.log
 EOS
-
-		sudo crontab crontab.tmp
-    	rm crontab.tmp
+		if [ ${general_sistema} = 0 ]; then
+			echo "0,30			*		*	*	*	echo \"\$(date), \$(uptime -p), \$(/usr/bin/vcgencmd measure_temp), \$(cat /proc/loadavg)\" >> /var/log/health.log" >> crontab.tmp
+		else
+			echo "0,30			*		*	*	*	echo \"\$(date), \$(uptime -p), \$(cat /proc/loadavg)\" >> /var/log/health.log" >> crontab.tmp
+		fi
 
 		sudo touch /var/log/health.log
 		sudo chmod 666 /var/log/health.log
-	elif [ ${general_sistema} = 1 ]; then
-		crontab -l > crontab.tmp
+	fi
 
-		cat <<EOS >> crontab.tmp
-
-#Envío y borrado diarios del registro del estado del sistema
-59						23	*	*	*	/usr/local/bin/informe.sh
-
-# Aviso en caso de reinicio
-@reboot							/usr/local/bin/reinicio.sh
-EOS
-
+	if [ -f 'crontab.tmp' ]; then
 		crontab crontab.tmp
 
-		sudo crontab -l | tee crontab.tmp > /dev/null
+		del crontab.tmp
+	fi
 
-		cat <<EOS >> crontab.tmp
+	if [ -f 'crontab_root.tmp' ]; then
+		sudo crontab crontab_root.tmp
 
-# Registro cada media hora del estado del sistema
-0,30			*		*	*	*	echo "$(date), $(uptime -p), $(cat /proc/loadavg)" >> /var/log/health.log
-EOS
-
-		sudo crontab crontab.tmp
-    	rm crontab.tmp
-
-		sudo touch /var/log/health.log
-		sudo chmod 666 /var/log/health.log
-
+		del crontab_root.tmp
 	fi
 }
 
