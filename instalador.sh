@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 3.5.0
+# Version       : 3.6.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -522,19 +522,31 @@ EOS
 
 		sudo chmod u+x /usr/local/bin/backup.sh
 
+		sudo bash -c "cat <<EOS > /usr/local/bin/clean_old_backups.sh
+#!/bin/bash
+
+duplicity remove-older-than 1M --force \"file:///${backups_montaje}/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
+
+EOS
+"
+
+		sudo chmod u+x /usr/local/bin/clean_old_backups.sh
+
 		sudo crontab -l > crontab.tmp
 
 		sudo bash -c "cat <<EOS >> crontab.tmp
 # Copia de seguridad semanal
 0			5		*	*	7	/usr/local/bin/backup.sh
+
+
+# Limpieza de copias de seguridad antiguas mensual
+0			10		1	*	*	/usr/local/bin/clean_old_backups.sh
+
 EOS
 "
 
 		sudo crontab crontab.tmp
     	rm crontab.tmp
-
-# TODO: clean_old_backups.sh
-
 	fi
 }
 
