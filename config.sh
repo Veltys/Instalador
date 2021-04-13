@@ -4,7 +4,7 @@
 # Description   : Configura el instalador, para que sea autónomo, o lo más autónomo posible
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 1.2.0
+# Version       : 1.3.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -76,32 +76,44 @@ claves_ssh_url=''
 # n ➡ No
 entorno_agente=''
 
-# Dirección del servidor SMB
-fstab_servidor_smb=''
+# Número de servidores SMB con los que se trabajará
+fstab_num_servidores_smb=''
 
-# Usuario del servidor SMB
-fstab_usuario_smb=''
+# Dirección de los servidores SMB
+fstab_servidores_smb[0]=''
 
-# Contraseña del servidor SMB
-fstab_contrasenya_smb=''
+# Usuarios de los servidores SMB
+fstab_usuarios_smb[0]=''
 
-# Unidades CIFS a montar
-fstab_num_cifs=''
+# Contraseñas de los servidores SMB
+fstab_contrasenyas_smb[0]=''
+
+# Número de unidades CIFS a montar
+fstab_num_cifs[0]=''
 
 # Unidades CIFS
-fstab_cifs=''
+declare -A fstab_cifs
+fstab_cifs[0,0]=''
 
-# Dirección del servidor SSH
-fstab_servidor_ssh=''
+# Número de servidores SSH con los que se trabajará
+fstab_num_servidores_ssh=''
 
-# Usuario del servidor SSH
-fstab_usuario_ssh=''
+# Direcciones de los servidores SSH
+fstab_servidores_ssh[0]=''
 
-# Unidades SSH a montar
-fstab_num_ssh=''
+# Usuarios de los servidores SSH
+fstab_usuarios_ssh[0]=''
+
+# Número de unidades SSH a montar
+fstab_num_ssh[0]=''
 
 # Unidades SSH
-fstab_ssh=''
+declare -A fstab_ssh
+fstab_ssh[0,0]=''
+
+# Ruta a las unidades SSH
+declare -A fstab_ruta_ssh
+fstab_ruta_ssh[0,0]=''
 
 # Instalar KDE
 # s ➡ Sí
