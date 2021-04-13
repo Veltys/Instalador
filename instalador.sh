@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-13
-# Version       : 4.1.0
+# Version       : 4.1.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -73,10 +73,10 @@ function cambiador_contrasenyas {
 		fi
 	fi
 
-	if [ ${general_sistema} = 0 ] || [ ${general_sistema} = 1 ] || [ ${contrasenyas_contrasenya} != 'n' ]; then
+	if [ "${general_sistema}" = 0 ] || [ "${general_sistema}" = 1 ] || [ "${contrasenyas_contrasenya}" != 'n' ]; then
 		echo "Cambiando la contraseña del usuario ${contrasenyas_quiensoy}"
 
-		sudo passwd ${quiensoy}
+		sudo passwd "${quiensoy}"
 
 		if [ "${quiensoy}" != 'root' ]; then
 			echo 'Cambiando la contraseña del usuario root'
@@ -109,12 +109,12 @@ function instalador_paquetes {
 		instalar=${instalar:0:1}
 		instalar=${instalar,,}
 
-		if [ ${instalar} != 'n' ]; then
+		if [ "${instalar}" != 'n' ]; then
 			programas_a_instalar="${programas_a_instalar} ${programas[$i]}"
 		fi
 	done
 
-	sudo ${gestor_paquetes} install ${programas_a_instalar} -y
+	sudo "${gestor_paquetes}" install "${programas_a_instalar}" -y
 }
 
 
@@ -177,13 +177,13 @@ echo
 EOS
 "
 
-	if [ ${sistema_operativo} = 'Ubuntu' ]; then
-		sudo ${gestor_paquetes} install landscape-common update-notifier-common -y
+	if [ "${sistema_operativo}" = 'Ubuntu' ]; then
+		sudo "${gestor_paquetes}" install landscape-common update-notifier-common -y
 
 		sudo /usr/lib/update-notifier/update-motd-updates-available --force
 	fi
 
-	if [ ${sistema_operativo} = 'Debian' ] || [ ${sistema_operativo} = 'Raspbian' ]; then
+	if [ "${sistema_operativo}" = 'Debian' ] || [ "${sistema_operativo}" = 'Raspbian' ]; then
 # FIXME: Caché para el control de actualizaciones
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/80-updates-available
 #!/bin/sh
@@ -224,7 +224,7 @@ EOS
 "
 	fi
 
-	if [ ${sistema_operativo} = 'Debian' ]; then
+	if [ "${sistema_operativo}" = 'Debian' ]; then
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/10-sysinfo
 #!/bin/bash
 #
@@ -268,7 +268,7 @@ EOS
 "
 
 		sudo rm /etc/update-motd.d/10-uname
-	elif [ ${sistema_operativo} = 'Raspbian' ]; then
+	elif [ "${sistema_operativo}" = 'Raspbian' ]; then
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/50-custom-motd
 #!/bin/bash
 
@@ -353,7 +353,7 @@ function configurador_ipv6 {
 		ipv6_ipv6=${ipv6_ipv6,,}
 	fi
 
-	if [ ${ipv6_ipv6} != 'n' ]; then
+	if [ "${ipv6_ipv6}" != 'n' ]; then
 		sudo sed -i -e 's/net.ipv6.conf.all.disable_ipv6 = 1/net.ipv6.conf.all.disable_ipv6 = 0/g' /etc/sysctl.conf
 	fi
 }
@@ -369,7 +369,7 @@ function configurador_cortafuegos {
 		cortafuegos_cortafuegos=${cortafuegos_cortafuegos,,}
 	fi
 
-	if [ ${cortafuegos_cortafuegos} != 'n' ]; then
+	if [ "${cortafuegos_cortafuegos}" != 'n' ]; then
 		echo 'Instalando el cortafuegos UFW...'
 
 		sudo ${gestor_paquetes} install ufw -y
@@ -408,7 +408,7 @@ function actualizador_dns {
 		dns_dns=${dns_dns,,}
 	fi
 
-	if [ ${dns_dns} != 'n' ]; then
+	if [ "${dns_dns}" != 'n' ]; then
 		echo 'Instalando el paquete "curl", necesario para el DNS dinámico...'
 
 		sudo ${gestor_paquetes} install curl -y
@@ -431,7 +431,7 @@ function actualizador_dns {
 		fi
 
 		if [ -z "$dns_dominios" ]; then
-			for (( i = 0; i<${dns_num_dominios}; i++ )); do
+			for (( i = 0; i<dns_num_dominios; i++ )); do
 				echo -n 'Introduzca el dominio nº' $(( i+1 ))': '
 				read dns_dominios[$i]
 			done
@@ -447,7 +447,7 @@ password='${dns_contrasenya}'
 EOS
 "
 
-		for (( i = 0; i<${dns_num_dominios}; i++ )); do
+		for (( i = 0; i<dns_num_dominios; i++ )); do
 			sudo bash -c "echo \"hosts[${i}]='${dns_dominios[$i]}'\" >> /usr/local/bin/actualizador.sh"
 		done
 
@@ -509,10 +509,10 @@ function configurador_backups {
 		backups_backups=${backups_backups,,}
 	fi
 
-	if [ ${backups_backups} != 'n' ]; then
+	if [ "${backups_backups}" != 'n' ]; then
 		echo 'Instalando el paquete "duplicity", necesario para las copias de seguridad...'
 
-		sudo ${gestor_paquetes} install duplicity -y
+		sudo "${gestor_paquetes}" install duplicity -y
 
 		echo 'Configurando parámetros de la copia de seguridad...'
 
@@ -547,7 +547,7 @@ EOS
 
 		sudo chmod u+x /usr/local/bin/clean_old_backups.sh
 
-		sudo crontab -l > crontab.tmp
+		sudo crontab -l | tee crontab.tmp > /dev/null
 
 		sudo bash -c "cat <<EOS >> crontab.tmp
 # Copia de seguridad semanal
@@ -577,7 +577,7 @@ function configurador_internet_movil {
 			internet_movil_internet_movil=${internet_movil_internet_movil,,}
 		fi
 
-		if [ ${internet_movil_internet_movil} != 'n' ]; then
+		if [ "${internet_movil_internet_movil}" != 'n' ]; then
 			echo 'Descargando el paquete "UMTSkeeper", necesario para administrar el módem usb...'
 
 			wget http://mintakaconciencia.net/squares/umtskeeper/src/umtskeeper.tar.gz
@@ -609,10 +609,10 @@ function configurador_ssh_inverso {
 			ssh_inverso_ssh_inverso=${ssh_inverso_ssh_inverso,,}
 		fi
 
-		if [ ${ssh_inverso_ssh_inverso} != 'n' ]; then
+		if [ "${ssh_inverso_ssh_inverso}" != 'n' ]; then
 			echo 'Instalando el paquete "autossh", necesario para mantener el túnel SSH...'
 
-			sudo ${gestor_paquetes} install autossh -y
+			sudo "${gestor_paquetes}" install autossh -y
 
 			echo 'Configurando parámetros del túnel SSH...'
 
@@ -653,7 +653,7 @@ function configurador_contador_linux {
 	contador_linux_contador=${contador_linux_contador:0:1}
 	contador_linux_contador=${contador_linux_contador,,}
 
-	if [ ${contador_linux_contador} != 'n' ]; then
+	if [ "${contador_linux_contador}" != 'n' ]; then
 		echo 'Instalando el script del contador...'
 
 		wget https://github.com/christinloehner/linuxcounter-update-examples/raw/master/_official/lico-update.sh
@@ -721,7 +721,7 @@ function instalador_claves_ssh {
 		read claves_ssh_url
 	fi
 
-	wget ${claves_ssh_url}
+	wget "${claves_ssh_url}"
 
 	mkdir ~/.ssh
 
@@ -754,7 +754,7 @@ function personalizador_entorno {
 		entorno_agente=${entorno_agente,,}
 	fi
 
-	if [ ${entorno_agente} != 'n' ]; then
+	if [ "${entorno_agente}" != 'n' ]; then
 		echo 'Instalando autoarranque del agente SSH...'
 
 		cat <<EOS >> ~/.bashrc
@@ -792,7 +792,7 @@ function configurador_fstab {
 			read fstab_num_servidores_smb
 		fi
 
-		for (( i = 0; i<${fstab_num_servidores_smb}; i++ )); do
+		for (( i = 0; i<fstab_num_servidores_smb; i++ )); do
 			if [ -z "${fstab_servidores_smb[$i]}" ]; then
 				echo -n 'Introduzca la dirección del servidor SMB nº ' $(( i+1 )) ': '
 				read fstab_servidores_smb[$i]
@@ -842,7 +842,7 @@ EOS
 			read fstab_num_servidores_ssh
 		fi
 
-		for (( i = 0; i<${fstab_num_servidores_ssh}; i++ )); do
+		for (( i = 0; i<fstab_num_servidores_ssh; i++ )); do
 			if [ -z "${fstab_servidores_ssh[$i]}" ]; then
 				echo -n 'Introduzca la dirección del servidor SSH nº ' $(( i+1 )) ': '
 				read fstab_servidores_ssh[$i]
@@ -903,7 +903,7 @@ EOS
 
 		crontab crontab.tmp
 
-		sudo crontab -l > crontab.tmp
+		sudo crontab -l | tee crontab.tmp > /dev/null
 
 		cat <<EOS >> crontab.tmp
 
@@ -930,12 +930,12 @@ EOS
 
 		crontab crontab.tmp
 
-		sudo crontab -l > crontab.tmp
+		sudo crontab -l | tee crontab.tmp > /dev/null
 
 		cat <<EOS >> crontab.tmp
 
 # Registro cada media hora del estado del sistema
-0,30			*		*	*	*	echo "`date`, `uptime -p`, `cat /proc/loadavg`" >> /var/log/health.log
+0,30			*		*	*	*	echo "$(date), $(uptime -p), $(cat /proc/loadavg)" >> /var/log/health.log
 EOS
 
 		sudo crontab crontab.tmp
@@ -961,7 +961,7 @@ function configurador_locales {
 ## Funciones 21: instalador_kde
 function instalador_kde {
 	if [ ${general_sistema} != 0 ]; then
-		if [ ${sistema_operativo} = 'Debian' ]; then
+		if [ "${sistema_operativo}" = 'Debian' ]; then
 
 			if [ -z "$kde_kde" ]; then
 				echo -n '¿Instalar el escritorio KDE? [s/N]: '
@@ -971,14 +971,14 @@ function instalador_kde {
 				kde_kde=${kde_kde,,}
 			fi
 
-			if [ ${kde_kde} = 's' ]; then
+			if [ "${kde_kde}" = 's' ]; then
 				echo 'Instalando KDE...'
 
 				sudo ${gestor_paquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen xorg -y
 
 				# Componente gráfico del cortafuegos, instalable en el caso de tener KDE
-				if [ ${cortafuegos_cortafuegos} != 'n' ]; then
-					sudo ${gestor_paquetes} install gufw -y
+				if [ "${cortafuegos_cortafuegos}" != 'n' ]; then
+					sudo "${gestor_paquetes}" install gufw -y
 				fi
 			fi
 		fi
