@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-04-16
-# Version       : 4.2.2
+# Version       : 4.2.3
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -422,7 +422,7 @@ function actualizador_dns {
 
 		if [ -z "$dns_contrasenya" ]; then
 			echo -n 'Contraseña: '
-			read dns_contrasenya
+			read -s dns_contrasenya
 		fi
 
 		if [ -z "$dns_num_dominios" ]; then
@@ -663,7 +663,47 @@ function instalador_mailers {
 			sudo chmod a+x /usr/local/bin/reinicio.sh
 		fi
 
-		cat <<EOS >> ~/.muttrc
+		if [ -z "$mailers_correo" ]; then
+			echo -n 'Introduzca la dirección de correo electrónico: '
+			read mailers_correo
+		fi
+
+		if [ -z "$mailers_usuario_imap" ]; then
+			echo -n 'Introduzca el usuario IMAP: '
+			read mailers_usuario_imap
+		fi
+
+		if [ -z "$mailers_contrasenya_imap" ]; then
+			echo -n 'Introduzca la contraseña IMAP: '
+			read -s mailers_contrasenya_imap
+		fi
+
+		if [ -z "$mailers_folder" ]; then
+			echo -n 'Introduzca la carpeta IMAP: '
+			read mailers_folder
+		fi
+
+		if [ -z "$mailers_spoolfile" ]; then
+			echo -n 'Introduzca el archivo de cola IMAP: '
+			read mailers_spoolfile
+		fi
+
+		if [ -z "$mailers_postponed" ]; then
+			echo -n 'Introduzca la carpeta de borradores IMAP: '
+			read mailers_postponed
+		fi
+
+		if [ -z "$mailer_smtp_url" ]; then
+			echo -n 'Introduzca la URL SMTP: '
+			read mailer_smtp_url
+		fi
+
+		if [ -z "$mailer_contrasenya_smtp" ]; then
+			echo -n 'Introduzca la contraseña SMTP: '
+			read -s mailer_contrasenya_smtp
+		fi
+
+		cat <<EOS > ~/.muttrc
 set from = "${mailers_correo}"
 set realname = "${general_nombre_sistema}"
 set imap_user = "${mailers_usuario_imap}"
@@ -763,17 +803,17 @@ function configurador_fstab {
 
 		for (( i = 0; i<fstab_num_servidores_smb; i++ )); do
 			if [ -z "${fstab_servidores_smb[$i]}" ]; then
-				echo -n 'Introduzca la dirección del servidor SMB nº ' $(( i+1 )) ': '
+				echo -n "Introduzca la dirección del servidor SMB nº $(( i+1 )): "
 				read fstab_servidores_smb[$i]
 			fi
 
 			if [ -z "${fstab_usuarios_smb[$i]}" ]; then
-				echo -n 'Introduzca el usuario del servidor SMB nº ' $(( i+1 )) ': '
+				echo -n "Introduzca el usuario del servidor SMB nº $(( i+1 )): "
 				read fstab_usuarios_smb[$i]
 			fi
 
 			if [ -z "${fstab_contrasenyas_smb[$i]}" ]; then
-				echo -n 'Introduzca el la contraseña del servidor SMB nº ' $(( i+1 )) ': '
+				echo -n "Introduzca el la contraseña del servidor SMB nº $(( i+1 )): "
 				read fstab_contrasenyas_smb[$i]
 			fi
 
@@ -784,13 +824,13 @@ EOS
 "
 
 			if [ -z "${fstab_num_cifs[$i]}" ]; then
-				echo -n '¿Cuántas unidades CIFS se van a montar en el servidor SSH nº ' $(( i+1 )) '?: '
+				echo -n "¿Cuántas unidades CIFS se van a montar en el servidor SSH nº $(( i+1 ))?: "
 				read fstab_num_cifs[$i]
 			fi
 
-			if [ -v "$fstab_cifs" ]; then
+			if [ -z "$fstab_cifs" ] && [ -v "$fstab_cifs[0,0]" ]; then
 				for (( j = 0; j<${fstab_num_cifs[$i]}; j++ )); do
-					echo -n 'Introduzca el nombre de la unidad nº' $(( j+1 ))' correspondiente al servidor SMB nº ' $(( i+1 )) ': '
+					echo -n "Introduzca el nombre de la unidad nº $(( j+1 )), correspondiente al servidor SMB nº $(( i+1 )): "
 					read fstab_cifs[$i,$j]
 				done
 			fi
@@ -813,26 +853,26 @@ EOS
 
 		for (( i = 0; i<fstab_num_servidores_ssh; i++ )); do
 			if [ -z "${fstab_servidores_ssh[$i]}" ]; then
-				echo -n 'Introduzca la dirección del servidor SSH nº ' $(( i+1 )) ': '
+				echo -n "Introduzca la dirección del servidor SSH nº $(( i+1 )): "
 				read fstab_servidores_ssh[$i]
 			fi
 
 			if [ -z "${fstab_usuarios_ssh[$i]}" ]; then
-				echo -n 'Introduzca el usuario del servidor SSH nº ' $(( i+1 )) ': '
+				echo -n "Introduzca el usuario del servidor SSH nº $(( i+1 )): "
 				read fstab_usuarios_ssh[$i]
 			fi
 
 			if [ -z "${fstab_num_ssh[$i]}" ]; then
-				echo -n '¿Cuántas unidades SSHFS se van a montar en el servidor SSH nº ' $(( i+1 )) '?: '
+				echo -n "¿Cuántas unidades SSHFS se van a montar en el servidor SSH nº $(( i+1 ))?: "
 				read fstab_num_ssh[$i]
 			fi
 
-			if [ -v "$fstab_ssh" ]; then
+			if [ -z "$fstab_ssh" ] && [ -v "$fstab_ssh[0,0]" ]; then
 				for (( j = 0; j<${fstab_num_ssh[$i]}; j++ )); do
-					echo -n 'Introduzca el nombre de la unidad nº' $(( j+1 ))' correspondiente al servidor SSH nº ' $(( i+1 )) ': '
+					echo -n "Introduzca el nombre de la unidad nº $(( j+1 )), correspondiente al servidor SSH nº $(( i+1 )): "
 					read fstab_ssh[$i,$j]
 
-					echo -n 'Introduzca la ruta en el servidor de la unidad nº' $(( j+1 ))' correspondiente al servidor SSH nº ' $(( i+1 )) ': '
+					echo -n "Introduzca la ruta en el servidor de la unidad nº $(( j+1 )), correspondiente al servidor SSH nº $(( i+1 )): "
 					read fstab_ruta_ssh[$i,$j]
 				done
 			fi
@@ -886,7 +926,7 @@ EOS
 	fi
 
 	if [ ${general_sistema} = 0 ] || [ ${general_sistema} = 1 ]; then
-		crontab -l > crontab.tmp
+		crontab -l >> crontab.tmp
 
 		cat <<EOS >> crontab.tmp
 
@@ -904,9 +944,9 @@ EOS
 # Registro cada media hora de las temperaturas del sistema
 EOS
 		if [ ${general_sistema} = 0 ]; then
-			echo "0,30			*		*	*	*	echo \"\$(date), \$(uptime -p), \$(/usr/bin/vcgencmd measure_temp), \$(cat /proc/loadavg)\" >> /var/log/health.log" >> crontab.tmp
+			echo "0,30			*		*	*	*	echo \"\$(date), \$(uptime -p), \$(/usr/bin/vcgencmd measure_temp), \$(cat /proc/loadavg)\" >> /var/log/health.log" >> crontab_root.tmp
 		else
-			echo "0,30			*		*	*	*	echo \"\$(date), \$(uptime -p), \$(cat /proc/loadavg)\" >> /var/log/health.log" >> crontab.tmp
+			echo "0,30			*		*	*	*	echo \"\$(date), \$(uptime -p), \$(cat /proc/loadavg)\" >> /var/log/health.log" >> crontab_root.tmp
 		fi
 
 		sudo touch /var/log/health.log
@@ -916,13 +956,13 @@ EOS
 	if [ -f 'crontab.tmp' ]; then
 		crontab crontab.tmp
 
-		del crontab.tmp
+		rm crontab.tmp
 	fi
 
 	if [ -f 'crontab_root.tmp' ]; then
 		sudo crontab crontab_root.tmp
 
-		del crontab_root.tmp
+		rm crontab_root.tmp
 	fi
 }
 
