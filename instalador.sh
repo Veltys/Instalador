@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2021-04-15
-# Version       : 4.2.1
+# Date          : 2021-04-16
+# Version       : 4.2.2
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -509,7 +509,7 @@ function configurador_backups {
 
 		if [ -z "$backups_montaje" ]; then
 			echo -n 'Punto de montaje donde se almacenarán las copias de seguridad: '
-			read backups_backups
+			read backups_montaje
 		fi
 
 		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
