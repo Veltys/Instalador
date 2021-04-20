@@ -72,25 +72,25 @@ internet_movil_internet_movil=''
 ssh_inverso_ssh_inverso=''
 
 # Dirección de correo electrónico
-mailers_correo='correo@gmail.com'
+mailers_correo=''
 
 # Usuario IMAP
-mailers_usuario_imap='correo@gmail.com'
+mailers_usuario_imap=''
 
 # Contraseña IMAP
 mailers_contrasenya_imap=''
 
 # Carpeta IMAP
-mailers_folder='imaps://imap.gmail.com:993'
+mailers_folder=''
 
 # Archivo de cola IMAP
-mailers_spoolfile='+INBOX'
+mailers_spoolfile=''
 
 # Carpeta de borradores IMAP
-mailers_postponed='+[Gmail]/Drafts'
+mailers_postponed=''
 
 # URL SMTP
-mailer_smtp_url='smtp://correo@smtp.gmail.com:587/'
+mailer_smtp_url=''
 
 # Contraseña SMTP
 mailer_contrasenya_smtp=''
