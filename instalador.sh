@@ -114,6 +114,7 @@ function instalador_paquetes {
 		fi
 	done
 
+# FIXME: Sigue fallando
 	sudo "${gestor_paquetes}" install "${programas_a_instalar}" -y
 }
 
@@ -642,6 +643,8 @@ function configurador_contador_linux {
 
 ## Funciones 15: instalador_mailers
 function instalador_mailers {
+# TODO: Detectar si no se ha clonado el submódulo
+
 	if [[ ${programas_a_instalar} = *'mutt'* ]]; then
 		echo 'Instalando mailers...'
 
@@ -662,6 +665,8 @@ function instalador_mailers {
 
 			sudo chmod a+x /usr/local/bin/reinicio.sh
 		fi
+
+# FIXME: Editar los mailers con sed
 
 		if [ -z "$mailers_correo" ]; then
 			echo -n 'Introduzca la dirección de correo electrónico: '
@@ -828,6 +833,7 @@ EOS
 				read fstab_num_cifs[$i]
 			fi
 
+# FIXME: Sigue fallando
 			if [ -z "$fstab_cifs" ] && [ -v "$fstab_cifs[0,0]" ]; then
 				for (( j = 0; j<${fstab_num_cifs[$i]}; j++ )); do
 					echo -n "Introduzca el nombre de la unidad nº $(( j+1 )), correspondiente al servidor SMB nº $(( i+1 )): "
@@ -867,6 +873,7 @@ EOS
 				read fstab_num_ssh[$i]
 			fi
 
+# FIXME: Sigue fallando
 			if [ -z "$fstab_ssh" ] && [ -v "$fstab_ssh[0,0]" ]; then
 				for (( j = 0; j<${fstab_num_ssh[$i]}; j++ )); do
 					echo -n "Introduzca el nombre de la unidad nº $(( j+1 )), correspondiente al servidor SSH nº $(( i+1 )): "
