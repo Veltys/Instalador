@@ -19,4 +19,4 @@ $(uname -n) se ha reiniciado. Si no ha sido intencional este reinicio, es posibl
 
 sleep 60
 
-echo "$mensaje" | mutt -s "$(whoami)@$(uname -n): informe diario" "${correo}"
+echo "$mensaje" | mutt -s "$(whoami)@$(uname -n): informe especial" "${correo}"
