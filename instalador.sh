@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-08-17
-# Version       : 4.2.4
+# Version       : 4.2.5
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -790,7 +790,6 @@ EOS
 alias apagar_pantalla='/usr/bin/vcgencmd display_power 0'
 alias encender_pantalla='/usr/bin/vcgencmd display_power 1'
 alias temperatura='/usr/bin/vcgencmd measure_temp'
-alias arreglar_iconos='sudo gdk-pixbuf-query-loaders --update-cache && sudo shutodown -r now'
 EOS
 	fi
 }
