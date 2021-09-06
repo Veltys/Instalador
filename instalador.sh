@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2021-08-17
-# Version       : 4.2.5
+# Date          : 2021-09-06
+# Version       : 4.2.6
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -114,8 +114,7 @@ function instalador_paquetes {
 		fi
 	done
 
-# FIXME: Sigue fallando
-	sudo "${gestor_paquetes}" install "${programas_a_instalar}" -y
+	sudo "${gestor_paquetes}" install ${programas_a_instalar} -y
 }
 
 
