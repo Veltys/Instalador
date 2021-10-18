@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2021-09-06
-# Version       : 4.2.6
+# Date          : 2021-10-18
+# Version       : 4.3.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -515,7 +515,11 @@ function configurador_backups {
 		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
 #!/bin/bash
 
-duplicity --no-encryption --full-if-older-than 1M --exclude /media --exclude /mnt --exclude /proc --exclude /run --exclude /sys --exclude /tmp --exclude /var/lib/lxcfs / \"file:///${backups_montaje}/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
+if mountpoint -q \"/${backups_montaje}/Copias de seguridad/\"; then
+	duplicity --no-encryption --full-if-older-than 1M --exclude /media --exclude /mnt --exclude /proc --exclude /run --exclude /sys --exclude /tmp --exclude /var/lib/lxcfs / \"file:///${backups_montaje}/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
+else
+	echo \"ERROR: El intento de copia de seguridad de \$(date +'%d de %m de %Y a las %H:%M') ha fracasado debido a que el dispositivo de destino no estaba montado\" >> /var/log/duplicity.log
+fi
 
 EOS
 "
@@ -525,7 +529,9 @@ EOS
 		sudo bash -c "cat <<EOS > /usr/local/bin/clean_old_backups.sh
 #!/bin/bash
 
-duplicity remove-older-than 1M --force \"file:///${backups_montaje}/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
+if mountpoint -q \"/${backups_montaje}/Copias de seguridad/\"; then
+	duplicity remove-older-than 1M --force \"file:///${backups_montaje}/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
+fi
 
 EOS
 "
