@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2021-10-18
-# Version       : 4.3.0
+# Version       : 4.4.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -671,8 +671,6 @@ function instalador_mailers {
 			sudo chmod a+x /usr/local/bin/reinicio.sh
 		fi
 
-# FIXME: Editar los mailers con sed
-
 		if [ -z "$mailers_correo" ]; then
 			echo -n 'Introduzca la dirección de correo electrónico: '
 			read mailers_correo
@@ -712,6 +710,9 @@ function instalador_mailers {
 			echo -n 'Introduzca la contraseña SMTP: '
 			read -s mailer_contrasenya_smtp
 		fi
+
+		sudo sed -i -e "s/correo='correo@email.com'/correo='${mailers_correo}'/g" /usr/local/bin/informe.sh
+		sudo sed -i -e "s/correo='correo@email.com'/correo='${mailers_correo}'/g" /usr/local/bin/reinicio.sh
 
 		cat <<EOS > ~/.muttrc
 set from = "${mailers_correo}"
