@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-04-26
-# Version       : 4.4.3
+# Version       : 4.5.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -648,7 +648,7 @@ function configurador_contador_linux {
 
 ## Funciones 15: instalador_mailers
 function instalador_mailers {
-# TODO: Detectar si no se ha clonado el submódulo
+	git submodule update --init
 
 	if [[ ${programas_a_instalar} = *'mutt'* ]]; then
 		echo 'Instalando mailers...'
