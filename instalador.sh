@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-04-26
-# Version       : 4.4.2
+# Version       : 4.4.3
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -819,7 +819,7 @@ function configurador_fstab {
 			read fstab_num_servidores_smb
 		fi
 
-		for (( i = 0; i<fstab_num_servidores_smb; i++ )); do
+		for (( i = 0; i<${fstab_num_servidores_smb}; i++ )); do
 			if [ -z "${fstab_servidores_smb[$i]}" ]; then
 				echo -n "Introduzca la dirección del servidor SMB nº $(( i+1 )): "
 				read fstab_servidores_smb[$i]
@@ -846,7 +846,6 @@ EOS
 				read fstab_num_cifs[$i]
 			fi
 
-# FIXME: Sigue fallando
 			if [ -z "$fstab_cifs" ] && [ -v "$fstab_cifs[0,0]" ]; then
 				for (( j = 0; j<${fstab_num_cifs[$i]}; j++ )); do
 					echo -n "Introduzca el nombre de la unidad nº $(( j+1 )), correspondiente al servidor SMB nº $(( i+1 )): "
@@ -855,7 +854,7 @@ EOS
 			fi
 
 			for (( j = 0; j<${fstab_num_cifs[$i]}; j++ )); do
-				sudo bash -c "echo \"//${fstab_servidor_smb[$i]}/${fstab_cifs[$i,$j]// /\\040}			/media/${fstab_cifs[$i,$j]// /\\040}			cifs		credentials=/root/.smbcredentials_${fstab_usuarios_smb[$i],,},iocharset=utf8,nofail,file_mode=0777,dir_mode=0777,vers=3.0,x-systemd.automount	0	0\" >> /etc/fstab"
+				sudo bash -c "echo \"//${fstab_servidores_smb[$i]}/${fstab_cifs[$i,$j]// /\\040}				/media/${fstab_cifs[$i,$j]// /\\040}			cifs		credentials=/root/.smbcredentials_${fstab_usuarios_smb[$i],,},iocharset=utf8,nofail,file_mode=0777,dir_mode=0777,vers=3.0,x-systemd.automount	0	0\" >> /etc/fstab"
 
 				sudo mkdir "/media/${fstab_cifs[$i]}"
 			done
@@ -870,7 +869,7 @@ EOS
 			read fstab_num_servidores_ssh
 		fi
 
-		for (( i = 0; i<fstab_num_servidores_ssh; i++ )); do
+		for (( i = 0; i<${fstab_num_servidores_ssh}; i++ )); do
 			if [ -z "${fstab_servidores_ssh[$i]}" ]; then
 				echo -n "Introduzca la dirección del servidor SSH nº $(( i+1 )): "
 				read fstab_servidores_ssh[$i]
@@ -886,7 +885,6 @@ EOS
 				read fstab_num_ssh[$i]
 			fi
 
-# FIXME: Sigue fallando
 			if [ -z "$fstab_ssh" ] && [ -v "$fstab_ssh[0,0]" ]; then
 				for (( j = 0; j<${fstab_num_ssh[$i]}; j++ )); do
 					echo -n "Introduzca el nombre de la unidad nº $(( j+1 )), correspondiente al servidor SSH nº $(( i+1 )): "
@@ -898,7 +896,7 @@ EOS
 			fi
 
 			for (( j = 0; j<${fstab_num_ssh[$i]}; j++ )); do
-				sudo bash -c "echo \"${fstab_usuario_ssh[$i]}@${fstab_servidor_ssh[$i]}:${fstab_ruta_ssh[$i,$j]}/				/media/${fstab_ssh[$i,$j]}				fuse.sshfs	allow_other,IdentityFile=/home/${quiensoy}/.ssh/id_rsa										0	0\" >> /etc/fstab"
+				sudo bash -c "echo \"${fstab_usuarios_ssh[$i]}@${fstab_servidores_ssh[$i]}:${fstab_ruta_ssh[$i,$j]}/		/media/${fstab_ssh[$i,$j]}			fuse.sshfs	allow_other,IdentityFile=/home/${quiensoy}/.ssh/id_rsa									0	0\" >> /etc/fstab"
 
 				sudo mkdir "/media/${fstab_ssh[$i $j]}"
 			done
