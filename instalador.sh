@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-06-15
-# Version       : 4.6.1
+# Version       : 4.6.2
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -846,7 +846,7 @@ EOS
 				read fstab_num_cifs[$i]
 			fi
 
-			if [ -z "$fstab_cifs" ] && [ -v "$fstab_cifs[0,0]" ]; then
+			if [ -z "$fstab_cifs" ] && [ -v "${fstab_cifs[0,0]}" ]; then
 				for (( j = 0; j<${fstab_num_cifs[$i]}; j++ )); do
 					echo -n "Introduzca el nombre de la unidad nº $(( j+1 )), correspondiente al servidor SMB nº $(( i+1 )): "
 					read fstab_cifs[$i,$j]
@@ -856,7 +856,7 @@ EOS
 			for (( j = 0; j<${fstab_num_cifs[$i]}; j++ )); do
 				sudo bash -c "echo \"//${fstab_servidores_smb[$i]}/${fstab_cifs[$i,$j]// /\\040}				/media/${fstab_cifs[$i,$j]// /\\040}			cifs		credentials=/root/.smbcredentials_${fstab_usuarios_smb[$i],,},iocharset=utf8,nofail,file_mode=0777,dir_mode=0777,vers=3.0,x-systemd.automount	0	0\" >> /etc/fstab"
 
-				sudo mkdir "/media/${fstab_cifs[$i]}"
+				sudo mkdir "/media/${fstab_cifs[$i,$j]}"
 			done
 		done
 
@@ -885,7 +885,7 @@ EOS
 				read fstab_num_ssh[$i]
 			fi
 
-			if [ -z "$fstab_ssh" ] && [ -v "$fstab_ssh[0,0]" ]; then
+			if [ -z "$fstab_ssh" ] && [ -v "${fstab_ssh[0,0]}" ]; then
 				for (( j = 0; j<${fstab_num_ssh[$i]}; j++ )); do
 					echo -n "Introduzca el nombre de la unidad nº $(( j+1 )), correspondiente al servidor SSH nº $(( i+1 )): "
 					read fstab_ssh[$i,$j]
@@ -898,7 +898,7 @@ EOS
 			for (( j = 0; j<${fstab_num_ssh[$i]}; j++ )); do
 				sudo bash -c "echo \"${fstab_usuarios_ssh[$i]}@${fstab_servidores_ssh[$i]}:${fstab_ruta_ssh[$i,$j]}/		/media/${fstab_ssh[$i,$j]}			fuse.sshfs	allow_other,IdentityFile=/home/${quiensoy}/.ssh/id_rsa									0	0\" >> /etc/fstab"
 
-				sudo mkdir "/media/${fstab_ssh[$i $j]}"
+				sudo mkdir "/media/${fstab_ssh[$i,$j]}"
 			done
 		done
 
