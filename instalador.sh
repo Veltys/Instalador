@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-06-15
-# Version       : 4.6.0
+# Version       : 4.6.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -819,7 +819,7 @@ function configurador_fstab {
 			read fstab_num_servidores_smb
 		fi
 
-		for (( i = 0; i<${fstab_num_servidores_smb}; i++ )); do
+		for (( i = 0; i<fstab_num_servidores_smb; i++ )); do
 			if [ -z "${fstab_servidores_smb[$i]}" ]; then
 				echo -n "Introduzca la dirección del servidor SMB nº $(( i+1 )): "
 				read fstab_servidores_smb[$i]
@@ -869,7 +869,7 @@ EOS
 			read fstab_num_servidores_ssh
 		fi
 
-		for (( i = 0; i<${fstab_num_servidores_ssh}; i++ )); do
+		for (( i = 0; i<fstab_num_servidores_ssh; i++ )); do
 			if [ -z "${fstab_servidores_ssh[$i]}" ]; then
 				echo -n "Introduzca la dirección del servidor SSH nº $(( i+1 )): "
 				read fstab_servidores_ssh[$i]
