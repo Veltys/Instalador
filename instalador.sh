@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2022-04-26
-# Version       : 4.5.0
+# Date          : 2022-06-15
+# Version       : 4.6.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -564,7 +564,7 @@ function configurador_internet_movil {
 			sudo bash -c "cat <<EOS > /usr/local/bin/internet_movil.sh
 #!/bin/bash
 
-/home/pi/umtskeeper/umtskeeper --sakisoperators \"USBINTERFACE='0' OTHER='USBMODEM' USBMODEM='12d1:1506' APN='CUSTOM_APN' CUSTOM_APN='gprs.pepephone.com' APN_USER='0' APN_PASS='0'\" --sakisswitches \"--sudo --console\" --devicename 'Huawei' --log --silent --monthstart 1 --nat 'no' --httpserver --httpport 8080
+/home/${quiensoy}/umtskeeper/umtskeeper --sakisoperators \"USBINTERFACE='0' OTHER='USBMODEM' USBMODEM='12d1:1506' APN='CUSTOM_APN' CUSTOM_APN='gprs.pepephone.com' APN_USER='0' APN_PASS='0'\" --sakisswitches \"--sudo --console\" --devicename 'Huawei' --log --silent --monthstart 1 --nat 'no' --httpserver --httpport 8080
 
 EOS
 "
@@ -603,7 +603,7 @@ function configurador_ssh_inverso {
 			sudo bash -c "cat <<EOS > /usr/local/bin/tunel-${general_nombre_sistema}-Ultra.sh
 #!/bin/bash
 
-autossh -M 5122 -f -C -i /home/pi/.ssh/${general_nombre_sistema}.pem -o ServerAliveInterval=20 -N -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@***REMOVED*** -p 22007
+autossh -M 5122 -f -C -i /home/${quiensoy}/.ssh/${general_nombre_sistema}.pem -o ServerAliveInterval=20 -N -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@***REMOVED*** -p 22007
 
 EOS
 "
@@ -611,7 +611,7 @@ EOS
 			sudo bash -c "cat <<EOS > /usr/local/bin/conexion-${general_nombre_sistema}-Ultra.sh
 #!/bin/bash
 
-ssh -C -i /home/pi/.ssh/${general_nombre_sistema}.pem -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@***REMOVED*** -p 22007
+ssh -C -i /home/${quiensoy}/.ssh/${general_nombre_sistema}.pem -R 2200${ssh_inverso_split_ip[3]}:${ssh_inverso_ip}:22 root@***REMOVED*** -p 22007
 
 EOS
 "
