@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-06-20
-# Version       : 4.7.0
+# Version       : 4.7.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -34,9 +34,9 @@ function configurador_general {
 		general_sistema=${general_sistema:0:1}
 		general_sistema=${general_sistema,,}
 
-		# Resulta que ahora el señorito Raspbian arm64 se identifica como Debian 🤦🏼‍♂️
+		# Resulta que ahora el señorito RasPiOS arm64 se identifica como Debian 🤦🏼‍♂️
 		if [ ${general_sistema} = 'r' ] && [ ${sistema_operativo} = 'Debian' ]; then
-			sistema_operativo='Raspbian'
+			sistema_operativo='RasPiOS'
 		fi
 	fi
 
@@ -188,7 +188,7 @@ EOS
 		sudo /usr/lib/update-notifier/update-motd-updates-available --force
 	fi
 
-	if [ "${sistema_operativo}" = 'Debian' ] || [ "${sistema_operativo}" = 'Raspbian' ]; then
+	if [ "${sistema_operativo}" = 'Debian' ] || [ "${sistema_operativo}" = 'RasPiOS' ]; then
 # FIXME: Caché para el control de actualizaciones
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/80-updates-available
 #!/bin/sh
@@ -273,7 +273,7 @@ EOS
 "
 
 		sudo rm /etc/update-motd.d/10-uname
-	elif [ "${sistema_operativo}" = 'Raspbian' ]; then
+	elif [ "${sistema_operativo}" = 'RasPiOS' ]; then
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/50-custom-motd
 #!/bin/bash
 
