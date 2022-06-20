@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-06-20
-# Version       : 4.7.1
+# Version       : 4.7.2
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -35,7 +35,7 @@ function configurador_general {
 		general_sistema=${general_sistema,,}
 
 		# Resulta que ahora el señorito RasPiOS arm64 se identifica como Debian 🤦🏼‍♂️
-		if [ ${general_sistema} = 'r' ] && [ ${sistema_operativo} = 'Debian' ]; then
+		if [ "${general_sistema}" = 'r' ] && [ "${sistema_operativo}" = 'Debian' ]; then
 			sistema_operativo='RasPiOS'
 		fi
 	fi
