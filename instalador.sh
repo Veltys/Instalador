@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2022-06-20
-# Version       : 4.7.2
+# Date          : 2022-06-23
+# Version       : 4.7.3
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -390,7 +390,7 @@ function configurador_cortafuegos {
 			sudo ufw allow from any to any port 80,443 proto tcp comment 'Servidor Apache httpd'
 		fi
 
-		if [ -z "$cortafuegos_reglas" ]; then
+		if [ -n "$cortafuegos_reglas" ]; then
 			for (( i = 0; i<${#cortafuegos_reglas[@]}; i++ )); do
 				sudo ufw "${cortafuegos_reglas[$i]}"
 			done
