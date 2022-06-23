@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-06-23
-# Version       : 4.7.4
+# Version       : 4.8.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -189,13 +189,21 @@ EOS
 	fi
 
 	if [ "${sistema_operativo}" = 'Debian' ] || [ "${sistema_operativo}" = 'RasPiOS' ]; then
-# FIXME: Caché para el control de actualizaciones
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/80-updates-available
 #!/bin/sh
 
-# echo \"Hay \\\$(apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+)\\\s\[[\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\]\\\s\\\([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\)? /i) {print \"\\\$1\\\n\"}' | wc -l) paquetes no actualizados\"
+cache=/tmp/updates-available.cache
 
-echo \"El comprobador de actualizaciones ha sido temporalmente deshabilitado, debido a su alto consumo de recursos\"
+command=\"echo \\\"Hay \\\\\\\$(apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+)\\\s\[[\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\]\\\s\\\([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\)? /i) {print \"\\\$1\\\n\"}' | wc -l) paquetes no actualizados\\\"\"
+
+exptime=86400 # 1 día = 24 (horas) * 60 (minutos) * 60 (segundos)
+
+if [ ! -f \"\\\$cache\" ] || [ \\\$(date +%s) -ge \\\$(( \\\$(stat -c %Y '/tmp/updates-available.cache' 2> /dev/null || 0) + exptime )) ]; then
+	eval \"\\\$command\" > \"\\\$cache\"
+fi
+
+cat \"\\\$cache\"
+
 echo
 EOS
 "
@@ -274,6 +282,7 @@ EOS
 
 		sudo rm /etc/update-motd.d/10-uname
 	elif [ "${sistema_operativo}" = 'RasPiOS' ]; then
+# TODO: Cachear la IP externa
 		sudo bash -c "cat <<EOS > /etc/update-motd.d/50-custom-motd
 #!/bin/bash
 
@@ -310,7 +319,7 @@ echo \"\\\${GREEN}
 ( : '~'.~.'~' : ) \\\${DARKGREY}Uso de disco.............: \\\${BLUE}\\\${SDUSED} (usado) / \\\${SDAVAIL} (libre)\\\${RED}
  ~ .~ (   ) ~. ~  \\\${DARKGREY}Cargas de trabajo........: \\\${BLUE}\\\${one}, \\\${five}, \\\${fifteen} (1, 5, 15 min)\\\${RED}
   (  : '~' :  )   \\\${DARKGREY}Procesos en ejecución....: \\\${BLUE}\\\`ps ax | wc -l | tr -d \" \"\\\`\\\${RED}
-   '~ .~~~. ~'    \\\${DARKGREY}Direcciones IP...........: \\\${BLUE}\\\`ip a | grep glo | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\` y \\\`wget -q -O - http://icanhazip.com/ | tail\\\`\\\${RED}
+   '~ .~~~. ~'    \\\${DARKGREY}Direcciones IP...........: \\\${BLUE}\\\`ip a | grep glo | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\` y \\\`wget -q -O - https://myip.veltys.es/ | tail\\\`\\\${RED}
        '~'        \\\${DARKGREY}Temperatura del sistema..: \\\${BLUE}\\\`/usr/bin/vcgencmd measure_temp | sed -r -e \"s/^temp=([0-9]*)\\\.([0-9])'C$/\1,\2 C/\"\\\`\\\${NC}
 \"
 EOS
