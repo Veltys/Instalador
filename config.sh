@@ -3,8 +3,8 @@
 # Title         : config.sh
 # Description   : Configura el instalador, para que sea autónomo, o lo más autónomo posible
 # Author        : Veltys
-# Date          : 2021-04-13
-# Version       : 1.5.0
+# Date          : 2022-06-30
+# Version       : 1.6.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -28,6 +28,15 @@ general_nombre_sistema=''
 # s ➡ Sí
 # n ➡ No
 contrasenyas_contrasenya=''
+
+# Programas a instalar:
+programas_comunes=('apache2' 'libapache2-mod-php' 'php' 'cifs-utils' 'elinks' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs' 'tmux');;
+
+programas_extra[0]=('gparted');;
+programas_extra[1]=('');;
+programas_extra[2]=('gparted');;
+
+programas_a_instalar='ca-certificates curl dnsutils lsb-release htop nano neofetch nmon'
 
 # Configurar IPv6
 # s ➡ Sí

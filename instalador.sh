@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-06-30
-# Version       : 4.8.1
+# Version       : 4.9.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -45,19 +45,13 @@ function configurador_general {
 	case ${general_sistema} in
 		'r') general_sistema=0
 			 echo 'una Raspberry Pi'
-
-			 programas=('apache2' 'libapache2-mod-php' 'php' 'cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
-
 		'v') general_sistema=1
 			 echo 'un servidor VPS'
-
-			 programas=('apache2' 'libapache2-mod-php' 'php' 'cifs-utils' 'elinks'           'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
-
 		*  ) general_sistema=2
 			 echo 'otro tipo de sistema'
-
-			 programas=('apache2' 'libapache2-mod-php' 'php' 'cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs');;
 	esac
+
+	 programas="${programas_comunes} ${programas_extra[$general_sistema]}"
 
 	if [ -z "$general_nombre_sistema" ]; then
 		echo -n 'Nombre propio (no DNS) del sistema: '
@@ -102,8 +96,6 @@ function actualizador_sistema {
 ## Funciones 4: instalador_paquetes
 function instalador_paquetes {
 	echo 'Instalando paquetes...'
-
-	programas_a_instalar='ca-certificates curl dnsutils lsb-release htop nano'
 
 	for (( i = 0; i<${#programas[@]}; i++ )); do
 		echo -n "¿Instalar el paquete \"${programas[$i]}\"? [S/n]: "
