@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2022-06-30
-# Version       : 4.9.0
+# Date          : 2022-09-09
+# Version       : 4.10.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -45,10 +45,13 @@ function configurador_general {
 	case ${general_sistema} in
 		'r') general_sistema=0
 			 echo 'una Raspberry Pi'
+			 ;;
 		'v') general_sistema=1
 			 echo 'un servidor VPS'
+			 ;;
 		*  ) general_sistema=2
 			 echo 'otro tipo de sistema'
+			 ;;
 	esac
 
 	 programas="${programas_comunes} ${programas_extra[$general_sistema]}"
