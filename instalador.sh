@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-09-09
-# Version       : 4.10.0
+# Version       : 4.11.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -54,8 +54,6 @@ function configurador_general {
 			 ;;
 	esac
 
-	 programas="${programas_comunes} ${programas_extra[$general_sistema]}"
-
 	if [ -z "$general_nombre_sistema" ]; then
 		echo -n 'Nombre propio (no DNS) del sistema: '
 		read general_nombre_sistema
@@ -100,15 +98,15 @@ function actualizador_sistema {
 function instalador_paquetes {
 	echo 'Instalando paquetes...'
 
-	for (( i = 0; i<${#programas[@]}; i++ )); do
-		echo -n "¿Instalar el paquete \"${programas[$i]}\"? [S/n]: "
+	for (( i = 0; i<${#programas_opcionales[@]}; i++ )); do
+		echo -n "¿Instalar el paquete \"${programas_opcionales[$i]}\"? [S/n]: "
 		read instalar
 
 		instalar=${instalar:0:1}
 		instalar=${instalar,,}
 
 		if [ "${instalar}" != 'n' ]; then
-			programas_a_instalar="${programas_a_instalar} ${programas[$i]}"
+			programas_a_instalar="${programas_a_instalar} ${programas_opcionales[$i]}"
 		fi
 	done
 
