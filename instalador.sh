@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2022-09-09
-# Version       : 4.11.0
+# Date          : 2022-10-17
+# Version       : 4.11.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -98,17 +98,19 @@ function actualizador_sistema {
 function instalador_paquetes {
 	echo 'Instalando paquetes...'
 
-	for (( i = 0; i<${#programas_opcionales[@]}; i++ )); do
-		echo -n "¿Instalar el paquete \"${programas_opcionales[$i]}\"? [S/n]: "
-		read instalar
+	if [ "${#programas_opcionales[@]}" -eq 1 ] && [ "${programas_opcionales[0]}" != '' ]; then
+		for (( i = 0; i<${#programas_opcionales[@]}; i++ )); do
+			echo -n "¿Instalar el paquete \"${programas_opcionales[$i]}\"? [S/n]: "
+			read instalar
 
-		instalar=${instalar:0:1}
-		instalar=${instalar,,}
+			instalar=${instalar:0:1}
+			instalar=${instalar,,}
 
-		if [ "${instalar}" != 'n' ]; then
-			programas_a_instalar="${programas_a_instalar} ${programas_opcionales[$i]}"
-		fi
-	done
+			if [ "${instalar}" != 'n' ]; then
+				programas_a_instalar="${programas_a_instalar} ${programas_opcionales[$i]}"
+			fi
+		done
+	fi
 
 	sudo "${gestor_paquetes}" install ${programas_a_instalar} -y
 }
