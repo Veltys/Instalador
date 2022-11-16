@@ -30,7 +30,7 @@ general_nombre_sistema=''
 contrasenyas_contrasenya=''
 
 # Programas a instalar:
-programas_opcionales=('apache2' 'libapache2-mod-php' 'php' 'cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs' 'tmux');;
+programas_opcionales=('apache2' 'libapache2-mod-php' 'php' 'cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs' 'tmux');
 
 programas_a_instalar='ca-certificates curl dnsutils lsb-release htop nano neofetch nmon'
 
