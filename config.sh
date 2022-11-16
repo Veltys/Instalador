@@ -30,7 +30,7 @@ general_nombre_sistema='tester'
 contrasenyas_contrasenya='n'
 
 # Programas a instalar:
-programas_opcionales=('apache2' 'libapache2-mod-php' 'php' 'speedtest-cli' 'sshfs' 'tmux');;
+programas_opcionales=('apache2' 'libapache2-mod-php' 'php' 'speedtest-cli' 'sshfs' 'tmux');
 
 programas_a_instalar='ca-certificates curl dnsutils elinks lsb-release htop nano neofetch nmon'
 
