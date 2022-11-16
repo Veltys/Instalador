@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-11-16
-# Version       : 4.12.0
+# Version       : 4.12.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -440,7 +440,7 @@ function actualizador_dns {
 		if [ -z "$dns_dominios" ]; then
 			for (( i = 0; i<dns_num_dominios; i++ )); do
 				echo -n 'Introduzca el dominio nº' $(( i+1 ))': '
-				read dns_dominios[$i]
+				read dns_dominios["$i"]
 			done
 		fi
 
@@ -819,17 +819,17 @@ function configurador_fstab {
 		for (( i = 0; i<fstab_num_servidores_smb; i++ )); do
 			if [ -z "${fstab_servidores_smb[$i]}" ]; then
 				echo -n "Introduzca la dirección del servidor SMB nº $(( i+1 )): "
-				read fstab_servidores_smb[$i]
+				read fstab_servidores_smb["$i"]
 			fi
 
 			if [ -z "${fstab_usuarios_smb[$i]}" ]; then
 				echo -n "Introduzca el usuario del servidor SMB nº $(( i+1 )): "
-				read fstab_usuarios_smb[$i]
+				read fstab_usuarios_smb["$i"]
 			fi
 
 			if [ -z "${fstab_contrasenyas_smb[$i]}" ]; then
 				echo -n "Introduzca el la contraseña del servidor SMB nº $(( i+1 )): "
-				read fstab_contrasenyas_smb[$i]
+				read fstab_contrasenyas_smb["$i"]
 			fi
 
 			sudo bash -c "cat <<EOS > /root/.smbcredentials_${fstab_usuarios_smb[$i],,}
@@ -840,13 +840,13 @@ EOS
 
 			if [ -z "${fstab_num_cifs[$i]}" ]; then
 				echo -n "¿Cuántas unidades CIFS se van a montar en el servidor SSH nº $(( i+1 ))?: "
-				read fstab_num_cifs[$i]
+				read fstab_num_cifs["$i"]
 			fi
 
 			if [ -z "$fstab_cifs" ] && [ -v "${fstab_cifs[0,0]}" ]; then
 				for (( j = 0; j<${fstab_num_cifs[$i]}; j++ )); do
 					echo -n "Introduzca el nombre de la unidad nº $(( j+1 )), correspondiente al servidor SMB nº $(( i+1 )): "
-					read fstab_cifs[$i,$j]
+					read fstab_cifs["$i","$j"]
 				done
 			fi
 
@@ -869,26 +869,26 @@ EOS
 		for (( i = 0; i<fstab_num_servidores_ssh; i++ )); do
 			if [ -z "${fstab_servidores_ssh[$i]}" ]; then
 				echo -n "Introduzca la dirección del servidor SSH nº $(( i+1 )): "
-				read fstab_servidores_ssh[$i]
+				read fstab_servidores_ssh["$i"]
 			fi
 
 			if [ -z "${fstab_usuarios_ssh[$i]}" ]; then
 				echo -n "Introduzca el usuario del servidor SSH nº $(( i+1 )): "
-				read fstab_usuarios_ssh[$i]
+				read fstab_usuarios_ssh["$i"]
 			fi
 
 			if [ -z "${fstab_num_ssh[$i]}" ]; then
 				echo -n "¿Cuántas unidades SSHFS se van a montar en el servidor SSH nº $(( i+1 ))?: "
-				read fstab_num_ssh[$i]
+				read fstab_num_ssh["$i"]
 			fi
 
 			if [ -z "$fstab_ssh" ] && [ -v "${fstab_ssh[0,0]}" ]; then
 				for (( j = 0; j<${fstab_num_ssh[$i]}; j++ )); do
 					echo -n "Introduzca el nombre de la unidad nº $(( j+1 )), correspondiente al servidor SSH nº $(( i+1 )): "
-					read fstab_ssh[$i,$j]
+					read fstab_ssh["$i","$j"]
 
 					echo -n "Introduzca la ruta en el servidor de la unidad nº $(( j+1 )), correspondiente al servidor SSH nº $(( i+1 )): "
-					read fstab_ruta_ssh[$i,$j]
+					read fstab_ruta_ssh["$i","$j"]
 				done
 			fi
 
