@@ -1,6 +1,18 @@
-language: bash
+# Title         : .travis.yml
+# Description   : Configura Travis CI para realizar los tests de integración
+# Author        : Veltys
+# Date          : 2022-11-16
+# Version       : 1.1.0
+# Usage         : (usado externamente)
+# Notes         : 
 
-sudo: required
+language: shell
+
+# sudo: required
+
+os: linux
+
+dist: xenial
 
 script:
     - chmod u+x instalador.sh
