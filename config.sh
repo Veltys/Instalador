@@ -19,30 +19,30 @@ sistema_operativo=$(lsb_release -si)
 # r ➡ Raspberry Pi
 # v ➡ VPS
 # o ➡ Otro
-general_sistema=''
+general_sistema='v'
 
 # Nombre propio (no DNS) del sistema
-general_nombre_sistema=''
+general_nombre_sistema='tester'
 
 # Cambiar las contraseñas:
 # s ➡ Sí
 # n ➡ No
-contrasenyas_contrasenya=''
+contrasenyas_contrasenya='n'
 
 # Programas a instalar:
-programas_opcionales=('apache2' 'libapache2-mod-php' 'php' 'cifs-utils' 'elinks' 'gparted' 'mutt' 'ntp' 'pptp-linux' 'speedtest-cli' 'sshfs' 'tmux');;
+programas_opcionales=('apache2' 'libapache2-mod-php' 'php' 'speedtest-cli' 'sshfs' 'tmux');;
 
-programas_a_instalar='ca-certificates curl dnsutils lsb-release htop nano neofetch nmon'
+programas_a_instalar='ca-certificates curl dnsutils elinks lsb-release htop nano neofetch nmon'
 
 # Configurar IPv6
 # s ➡ Sí
 # n ➡ No
-ipv6_ipv6=''
+ipv6_ipv6='n'
 
 # Instalar un cortafuegos:
 # s ➡ Sí
 # n ➡ No
-cortafuegos_cortafuegos=''
+cortafuegos_cortafuegos='n'
 
 # Reglas adicionales para el cortafuegos
 cortafuegos_reglas[0]=''
@@ -50,7 +50,7 @@ cortafuegos_reglas[0]=''
 # Asignar DNS dinámico
 # s ➡ Sí
 # n ➡ No
-dns_dns=''
+dns_dns='n'
 
 # Nombre de usuario del DNS dinámico
 dns_usuario=''
@@ -65,16 +65,16 @@ dns_num_dominios=''
 dns_dominios=''
 
 # Realizar copias de seguridad
-backups_backups=''
+backups_backups='n'
 
 # Punto de montaje donde se almacenarán las copias de seguridad
 backups_montaje=''
 
 # Gestionar una conexión a Internet con un módem USB
-internet_movil_internet_movil=''
+internet_movil_internet_movil='n'
 
 # Túnel SSH inverso
-ssh_inverso_ssh_inverso=''
+ssh_inverso_ssh_inverso='n'
 
 # Dirección de correo electrónico
 mailers_correo=''
@@ -101,12 +101,12 @@ mailer_smtp_url=''
 mailer_contrasenya_smtp=''
 
 # URL del servidor HTTP con las claves SSH
-claves_ssh_url=''
+claves_ssh_url='#'
 
 # Llamar al agente SSH:
 # s ➡ Sí
 # n ➡ No
-entorno_agente=''
+entorno_agente='n'
 
 # Número de servidores SMB con los que se trabajará
 fstab_num_servidores_smb=''
@@ -150,4 +150,4 @@ fstab_ruta_ssh[0,0]=''
 # Instalar KDE
 # s ➡ Sí
 # n ➡ No
-kde_kde=''
+kde_kde='n'
