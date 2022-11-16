@@ -4,7 +4,7 @@
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
 # Date          : 2022-11-16
-# Version       : 4.11.2
+# Version       : 4.12.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -519,31 +519,21 @@ function configurador_backups {
 			read backups_montaje
 		fi
 
-		sudo bash -c "cat <<EOS > /usr/local/bin/backup.sh
-#!/bin/bash
-
-if mountpoint -q \"/${backups_montaje}/Copias de seguridad/\"; then
-	duplicity --no-encryption --full-if-older-than 1M --exclude /media --exclude /mnt --exclude /proc --exclude /run --exclude /sys --exclude /tmp --exclude /var/lib/lxcfs / \"file:///${backups_montaje}/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
-else
-	echo \"ERROR: El intento de copia de seguridad de \\\$(date +'%d de %m de %Y a las %H:%M') ha fracasado debido a que el dispositivo de destino no estaba montado\" >> /var/log/duplicity.log
-fi
-
-EOS
-"
+		sudo cp ./auxiliares/backup.sh /usr/local/bin/backup.sh
 
 		sudo chmod u+x /usr/local/bin/backup.sh
 
-		sudo bash -c "cat <<EOS > /usr/local/bin/clean_old_backups.sh
-#!/bin/bash
+		sudo cp ./auxiliares/backup.sh /usr/local/bin/clean_old_backups.sh
 
-if mountpoint -q \"/${backups_montaje}/Copias de seguridad/\"; then
-	duplicity remove-older-than 1M --force \"file:///${backups_montaje}/Copias de seguridad/${backups_tipo_sistema}/${general_nombre_sistema}\" >> /var/log/duplicity.log
-fi
+		sudo chmod u+x /usr/local/bin/clean_old_backups.sh
 
+		sudo bash -c "cat <<EOS > /etc/backup
+montaje='${backups_montaje}/Copias de seguridad'
+ruta='${backups_tipo_sistema}/${general_nombre_sistema}'
 EOS
 "
 
-		sudo chmod u+x /usr/local/bin/clean_old_backups.sh
+		sudo chmod 644 /etc/backup
 	fi
 }
 
