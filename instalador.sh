@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2022-10-17
-# Version       : 4.11.1
+# Date          : 2022-11-16
+# Version       : 4.11.2
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -669,11 +669,11 @@ function instalador_mailers {
 		fi
 
 		if [ ${general_sistema} = 0 ] || [ ${general_sistema} = 1 ]; then
-			sudo cp ./mailers/informe.sh /usr/local/bin/informe.sh
+			sudo cp ./auxiliares/informe.sh /usr/local/bin/informe.sh
 
 			sudo chmod a+x /usr/local/bin/informe.sh
 
-			sudo cp ./mailers/reinicio.sh /usr/local/bin/reinicio.sh
+			sudo cp ./auxiliares/reinicio.sh /usr/local/bin/reinicio.sh
 
 			sudo chmod a+x /usr/local/bin/reinicio.sh
 		fi
