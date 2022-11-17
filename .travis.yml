@@ -6,13 +6,13 @@
 # Usage         : (usado externamente)
 # Notes         : 
 
+os: linux
+
+dist: jammy
+
 language: shell
 
 # sudo: required
-
-os: linux
-
-dist: xenial
 
 script:
     - chmod u+x instalador.sh
