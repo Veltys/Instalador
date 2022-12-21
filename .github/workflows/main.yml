@@ -1,0 +1,27 @@
+# Title         : main.yml
+# Description   : Configura GitHub Actions para realizar los tests de integración
+# Author        : Veltys
+# Date          : 2022-12-21
+# Version       : 1.0.0
+# Usage         : (usado externamente)
+# Notes         : 
+
+
+name: Testing Action
+
+on: 
+  push:
+    branches:
+      - github-actions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@main
+      
+      - name: "Tester"
+        run: |
+          chmod u+x instalador.sh
+          bash instalador.sh
