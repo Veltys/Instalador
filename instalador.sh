@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2022-11-16
-# Version       : 4.12.1
+# Date          : 2022-12-21
+# Version       : 4.12.2
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -261,7 +261,7 @@ swap_usage=\\\`free -m | awk '/Swap/ { printf(\"%3.1f%%\", \"exit !$2;$3/$2*100\
 users=\\\`users | wc -w\\\`
 time=\\\`uptime | grep -ohe 'up .*' | sed 's/,/\\\ hours/g' | awk '{ printf \\\$2\" \"\\\$3 }'\\\`
 processes=\\\`ps aux | wc -l\\\`
-ip=\\\`ip a | grep glo | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\`
+ip=\\\`ip a | grep global | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\`
 
 echo \"System information as of: \\\$date\"
 echo
