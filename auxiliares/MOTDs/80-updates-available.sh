@@ -5,7 +5,7 @@
 # Author        : Veltys
 # Date          : 2022-12-23
 # Version       : 1.0.1
-# Usage         : (llamado al iniciar sesión, si está correctamente instalado
+# Usage         : (llamado al iniciar sesión, si está correctamente instalado)
 # Notes         : 
 
 

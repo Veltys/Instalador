@@ -5,7 +5,7 @@
 # Author        : Veltys
 # Date          : 2022-12-23
 # Version       : 2.0.0
-# Usage         : (llamado al iniciar sesión, si está correctamente instalado
+# Usage         : (llamado al iniciar sesión, si está correctamente instalado)
 # Notes         : Es necesaria una terminal de 256 colores para apreciar el dibujo ASCII adecuadamente
 
 
