@@ -20,7 +20,7 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 date=$(date)
-load=$(cat /proc/loadavg | awk '{print $1}')
+load=$(awk '{print $1}' /proc/loadavg)
 root_usage=$(df -h / | awk '/\// {print $(NF-1)}')
 memory_usage=$(free -m | awk '/Mem:/ { total=$2 } /buffers\/cache/ { used=$3 } END { printf("%3.1f%%", used/total*100)}')
 swap_usage=$(free -m | awk '/Swap/ { printf("%3.1f%%", "exit !;/*100") }')
