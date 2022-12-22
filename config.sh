@@ -50,19 +50,19 @@ cortafuegos_reglas[0]=''
 # Asignar DNS dinámico
 # s ➡ Sí
 # n ➡ No
-dns_dns='n'
+dns_dns='s'
 
 # Nombre de usuario del DNS dinámico
-dns_usuario=''
+dns_usuario="$DNS_USUARIO"
 
 # Contraseña del DNS dinámico
-dns_contrasenya=''
+dns_contrasenya="$DNS_CONTRASENYA"
 
 # Número de dominios del DNS dinámico
-dns_num_dominios=''
+dns_num_dominios="$DNS_NUM_DOMINIOS"
 
 # Dominios del DNS dinámico
-dns_dominios=''
+dns_dominios="$DNS_DOMINIOS"
 
 # Realizar copias de seguridad
 backups_backups='n'
