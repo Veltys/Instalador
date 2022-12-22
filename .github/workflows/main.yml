@@ -1,0 +1,34 @@
+# Title         : main.yml
+# Description   : Configura GitHub Actions para realizar los tests de integración
+# Author        : Veltys
+# Date          : 2022-12-21
+# Version       : 1.2.1
+# Usage         : (usado externamente)
+# Notes         : 
+
+
+name: Testing Action
+
+on: 
+  push:
+    branches:
+      - testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@main
+
+      - name: "Tester"
+        shell: bash
+        env:
+          CLAVES_SSH_URL:	${{ secrets.CLAVES_SSH_URL }}
+          DNS_USUARIO:		${{ secrets.DNS_USUARIO }}
+          DNS_CONTRASENYA:	${{ secrets.DNS_CONTRASENYA }}
+          DNS_DOMINIOS:		${{ secrets.DNS_DOMINIOS }}
+        run: |
+          chmod u+x instalador.sh
+          bash instalador.sh
+          rm ~/.ssh/authorized_keys
