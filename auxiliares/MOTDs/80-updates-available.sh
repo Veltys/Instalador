@@ -3,8 +3,8 @@
 # Title         : 80-updates-available.sh
 # Description   : Muestra las actualizaciones pendientes de instalar en el MOTD
 # Author        : Veltys
-# Date          : 2022-12-21
-# Version       : 1.0.0
+# Date          : 2022-12-23
+# Version       : 1.0.1
 # Usage         : (llamado al iniciar sesión, si está correctamente instalado
 # Notes         : 
 
@@ -15,7 +15,7 @@ command="echo \"Hay \$(apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s
 
 exptime=86400 # 1 día = 24 (horas) * 60 (minutos) * 60 (segundos)
 
-if [ ! -f "$cache" ] || [ $(date +%s) -ge $(( $(stat -c %Y '/tmp/updates-available.cache' 2> /dev/null || 0) + exptime )) ]; then
+if [ ! -f "$cache" ] || [ $(date +%s) -ge $(( $(stat -c %Y "$cache" 2> /dev/null || 0) + exptime )) ]; then
         eval "$command" > "$cache"
 fi
 
