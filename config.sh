@@ -101,7 +101,7 @@ mailer_smtp_url=''
 mailer_contrasenya_smtp=''
 
 # URL del servidor HTTP con las claves SSH
-claves_ssh_url='#'
+claves_ssh_url="$CLAVES_SSH_URL"
 
 # Llamar al agente SSH:
 # s ➡ Sí
