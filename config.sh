@@ -59,7 +59,7 @@ dns_usuario="$DNS_USUARIO"
 dns_contrasenya="$DNS_CONTRASENYA"
 
 # Número de dominios del DNS dinámico
-dns_num_dominios="$DNS_NUM_DOMINIOS"
+dns_num_dominios='1'
 
 # Dominios del DNS dinámico
 dns_dominios="$DNS_DOMINIOS"
