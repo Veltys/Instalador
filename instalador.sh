@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2022-11-16
-# Version       : 4.12.1
+# Date          : 2022-12-21
+# Version       : 4.13.0
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -122,58 +122,8 @@ function configurador_motd {
 
 	sudo ${gestor_paquetes} install figlet -y
 
-	sudo bash -c "cat <<EOS > /etc/update-motd.d/00-header
-#!/bin/sh
-#
-#    00-header - create the header of the MOTD
-#    Copyright (c) 2013 Nick Charlton
-#    Copyright (c) 2009-2010 Canonical Ltd.
-#
-#    Authors: Nick Charlton <hello@nickcharlton.net>
-#             Dustin Kirkland <kirkland@canonical.com>
-#
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License along
-#    with this program; if not, write to the Free Software Foundation, Inc.,
-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-[ -r /etc/lsb-release ] && . /etc/lsb-release
-
-[ -r /etc/os-release ] && . /etc/os-release
-
-if [ ! -z \"\\\$PRETTY_NAME\" ]; then
-        DISTRIB_DESCRIPTION=\"\\\$PRETTY_NAME\"
-elif [ -z \"\\\$DISTRIB_DESCRIPTION\" ] && [ -x /usr/bin/lsb_release ]; then
-        # Fall back to using the very slow lsb_release utility
-        DISTRIB_DESCRIPTION=\\\$(lsb_release -s -d)
-fi
-
-figlet \\\$(hostname)
-printf \"\\\n\"
-
-printf \"Welcome to %s (%s).\\\n\" \"\\\$DISTRIB_DESCRIPTION\" \"\\\$(uname -r)\"
-printf \"\\\n\"
-EOS
-"
-
-	sudo bash -c "cat <<EOS > /etc/update-motd.d/60-weather
-#!/bin/sh
-
-export TERM=xterm-256color
-
-curl \"es.wttr.in/?0&m\"
-echo
-EOS
-"
+	sudo cp ./auxiliares/MOTDs/00-header.sh /etc/update-motd.d/00-header
+	sudo cp ./auxiliares/MOTDs/60-weather.sh /etc/update-motd.d/60-weather
 
 	if [ "${sistema_operativo}" = 'Ubuntu' ]; then
 		sudo "${gestor_paquetes}" install landscape-common update-notifier-common -y
@@ -182,141 +132,17 @@ EOS
 	fi
 
 	if [ "${sistema_operativo}" = 'Debian' ] || [ "${sistema_operativo}" = 'RasPiOS' ]; then
-		sudo bash -c "cat <<EOS > /etc/update-motd.d/80-updates-available
-#!/bin/sh
+		sudo cp ./auxiliares/MOTDs/80-updates-available.sh /etc/update-motd.d/80-updates-available
+		sudo cp ./auxiliares/MOTDs/90-footer.sh /etc/update-motd.d/90-footer
 
-cache=/tmp/updates-available.cache
-
-command=\"echo \\\"Hay \\\\\\\$(apt-get --just-print upgrade 2>&1 | perl -ne 'if (/Inst\s([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+)\\\s\[[\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\]\\\s\\\([\\\w,\\\-,\\\d,\\\.,~,:,\\\+]+\\\)? /i) {print \"\\\$1\\\n\"}' | wc -l) paquetes no actualizados\\\"\"
-
-exptime=86400 # 1 día = 24 (horas) * 60 (minutos) * 60 (segundos)
-
-if [ ! -f \"\\\$cache\" ] || [ \\\$(date +%s) -ge \\\$(( \\\$(stat -c %Y '/tmp/updates-available.cache' 2> /dev/null || 0) + exptime )) ]; then
-	eval \"\\\$command\" > \"\\\$cache\"
-fi
-
-cat \"\\\$cache\"
-
-echo
-EOS
-"
-
-		sudo bash -c "cat <<EOS > /etc/update-motd.d/90-footer
-#!/bin/sh
-#
-#    90-footer - write the admin's footer to the MOTD
-#    Copyright (c) 2013 Nick Charlton
-#    Copyright (c) 2009-2010 Canonical Ltd.
-#
-#    Authors: Nick Charlton <hello@nickcharlton.net>
-#             Dustin Kirkland <kirkland@canonical.com>
-#
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License along
-#    with this program; if not, write to the Free Software Foundation, Inc.,
-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-[ -f /etc/motd.tail ] && cat /etc/motd.tail || true
-EOS
-"
 	fi
 
 	if [ "${sistema_operativo}" = 'Debian' ]; then
-		sudo bash -c "cat <<EOS > /etc/update-motd.d/10-sysinfo
-#!/bin/bash
-#
-#    10-sysinfo - generate the system information
-#    Copyright (c) 2013 Nick Charlton
-#
-#    Authors: Nick Charlton <hello@nickcharlton.net>
-#
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License along
-#    with this program; if not, write to the Free Software Foundation, Inc.,
-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-date=\\\`date\\\`
-load=\\\`cat /proc/loadavg | awk '{print \\\$1}'\\\`
-root_usage=\\\`df -h / | awk '/\\\// {print \\\$(NF-1)}'\\\`
-memory_usage=\\\`free -m | awk '/Mem:/ { total=\\\$2 } /buffers\/cache/ { used=\\\$3 } END { printf(\"%3.1f%%\", used/total*100)}'\\\`
-swap_usage=\\\`free -m | awk '/Swap/ { printf(\"%3.1f%%\", \"exit !$2;$3/$2*100\") }'\\\`
-users=\\\`users | wc -w\\\`
-time=\\\`uptime | grep -ohe 'up .*' | sed 's/,/\\\ hours/g' | awk '{ printf \\\$2\" \"\\\$3 }'\\\`
-processes=\\\`ps aux | wc -l\\\`
-ip=\\\`ip a | grep glo | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\`
-
-echo \"System information as of: \\\$date\"
-echo
-printf \"System load:\t%s\tIP Address:\t%s\n\" \\\$load \\\$ip
-printf \"Memory usage:\t%s\tSystem uptime:\t%s\n\" \\\$memory_usage \"\\\$time\"
-printf \"Usage on /:\t%s\tSwap usage:\t%s\n\" \\\$root_usage \\\$swap_usage
-printf \"Local Users:\t%s\tProcesses:\t%s\n\" \\\$users \\\$processes
-echo
-EOS
-"
+		sudo cp ./auxiliares/MOTDs/10-sysinfo.sh /etc/update-motd.d/10-sysinfo
 
 		sudo rm /etc/update-motd.d/10-uname
 	elif [ "${sistema_operativo}" = 'RasPiOS' ]; then
-# TODO: Cachear la IP externa
-		sudo bash -c "cat <<EOS > /etc/update-motd.d/50-custom-motd
-#!/bin/bash
-
-export TERM=xterm-256color
-
-let upSeconds=\"\\\$(/usr/bin/cut -d. -f1 /proc/uptime)\"
-let secs=\\\$((\\\${upSeconds}%60))
-let mins=\\\$((\\\${upSeconds}/60%60))
-let hours=\\\$((\\\${upSeconds}/3600%24))
-let days=\\\$((\\\${upSeconds}/86400))
-UPTIME=\\\`printf \"%d días, %02dh%02dm%02ds\" \"\\\$days\" \"\\\$hours\" \"\\\$mins\" \"\\\$secs\"\\\`
-
-MEMFREE=\\\`cat /proc/meminfo | grep MemFree | awk {'print \\\$2'}\\\`
-MEMTOTAL=\\\`cat /proc/meminfo | grep MemTotal | awk {'print \\\$2'}\\\`
-
-SDUSED=\\\`df -h | grep 'dev/root' | awk '{print \\\$3}' | xargs\\\`
-SDAVAIL=\\\`df -h | grep 'dev/root' | awk '{print \\\$4}' | xargs\\\`
-
-# get the load averages
-read one five fifteen rest < /proc/loadavg
-
-DARKGREY=\"\\\$(tput sgr0 ; tput bold ; tput setaf 0)\"
-RED=\"\\\$(tput sgr0 ; tput setaf 1)\"
-GREEN=\"\\\$(tput sgr0 ; tput setaf 2)\"
-BLUE=\"\\\$(tput sgr0 ; tput setaf 4)\"
-NC=\"\\\$(tput sgr0)\" # No Color
-
-echo \"\\\${GREEN}
-   .~~.   .~~.    \\\`date +\"%A, %e %B %Y, %r\"\\\`
-  '. \ ' ' / .'   \\\`uname -srmo\\\`\\\${RED}
-   .~ .~~~..~.
-  : .~.'~'.~. :   \\\${DARKGREY}Tiempo en línea..........: \\\${BLUE}\\\${UPTIME}\\\${RED}
- ~ (   ) (   ) ~  \\\${DARKGREY}Memoria..................: \\\${BLUE}\\\${MEMFREE}kB (libre) / \\\${MEMTOTAL}kB (total)\\\${RED}
-( : '~'.~.'~' : ) \\\${DARKGREY}Uso de disco.............: \\\${BLUE}\\\${SDUSED} (usado) / \\\${SDAVAIL} (libre)\\\${RED}
- ~ .~ (   ) ~. ~  \\\${DARKGREY}Cargas de trabajo........: \\\${BLUE}\\\${one}, \\\${five}, \\\${fifteen} (1, 5, 15 min)\\\${RED}
-  (  : '~' :  )   \\\${DARKGREY}Procesos en ejecución....: \\\${BLUE}\\\`ps ax | wc -l | tr -d \" \"\\\`\\\${RED}
-   '~ .~~~. ~'    \\\${DARKGREY}Direcciones IP...........: \\\${BLUE}\\\`ip a | grep glo | awk '{print \\\$2}' | head -1 | cut -f1 -d/\\\` y \\\`wget -q -O - https://myip.veltys.es/ | tail\\\`\\\${RED}
-       '~'        \\\${DARKGREY}Temperatura del sistema..: \\\${BLUE}\\\`/usr/bin/vcgencmd measure_temp | sed -r -e \"s/^temp=([0-9]*)\\\.([0-9])'C$/\1,\2 C/\"\\\`\\\${NC}
-\"
-EOS
-"
+		sudo cp ./auxiliares/MOTDs/50-custom-motd.sh /etc/update-motd.d/50-custom-motd
 	fi
 
 	sudo chmod a+x /etc/update-motd.d/*
