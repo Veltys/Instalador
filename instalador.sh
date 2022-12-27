@@ -3,8 +3,8 @@
 # Title         : instalador.sh
 # Description   : Instala los programas necesarios para la correcta puesta en marcha de un servidor basado en el glorioso Debian GNU/Linux
 # Author        : Veltys
-# Date          : 2022-12-21
-# Version       : 4.13.0
+# Date          : 2022-12-27
+# Version       : 4.13.1
 # Usage         : sudo bash instalador.sh | ./instalador.sh
 # Notes         : No es necesario ser superusuario para su correcto funcionamiento, pero sí poder hacer uso del comando "sudo"
 
@@ -89,8 +89,8 @@ function cambiador_contrasenyas {
 function actualizador_sistema {
 	echo 'Actualizando sistema...'
 
-	sudo ${gestor_paquetes} update
-	sudo ${gestor_paquetes} upgrade -y
+	sudo "${gestor_paquetes} update"
+	sudo "${gestor_paquetes} upgrade -y"
 }
 
 
@@ -120,7 +120,7 @@ function instalador_paquetes {
 function configurador_motd {
 	echo 'Configurando el MOTD....'
 
-	sudo ${gestor_paquetes} install figlet -y
+	sudo "${gestor_paquetes} install figlet -y"
 
 	sudo cp ./auxiliares/MOTDs/00-header.sh /etc/update-motd.d/00-header
 	sudo cp ./auxiliares/MOTDs/60-weather.sh /etc/update-motd.d/60-weather
@@ -169,10 +169,10 @@ function limpiador {
 		sudo dphys-swapfile swapoff
 		sudo dphys-swapfile uninstall
 
-		sudo ${gestor_paquetes} purge dphys-swapfile -y
+		sudo "${gestor_paquetes} purge dphys-swapfile -y"
 	fi
 
-	sudo ${gestor_paquetes} autoremove -y
+	sudo "${gestor_paquetes} autoremove -y"
 }
 
 
@@ -205,7 +205,7 @@ function configurador_cortafuegos {
 	if [ "${cortafuegos_cortafuegos}" != 'n' ]; then
 		echo 'Instalando el cortafuegos UFW...'
 
-		sudo ${gestor_paquetes} install ufw -y
+		sudo "${gestor_paquetes} install ufw -y"
 
 		echo 'Configurando el cortafuegos UFW para permitir las conexiones SSH...'
 		sudo ufw allow from any to any port 22 proto tcp comment 'Servidor SSH'
@@ -244,7 +244,7 @@ function actualizador_dns {
 	if [ "${dns_dns}" != 'n' ]; then
 		echo 'Instalando el paquete "curl", necesario para el DNS dinámico...'
 
-		sudo ${gestor_paquetes} install curl -y
+		sudo "${gestor_paquetes} install curl -y"
 
 		echo 'Configurando parámetros del DNS dinámico...'
 
@@ -476,7 +476,7 @@ function instalador_mailers {
 	if [[ ${programas_a_instalar} = *'mutt'* ]]; then
 		echo 'Instalando mailers...'
 
-		sudo ${gestor_paquetes} install gpgsm -y
+		sudo "${gestor_paquetes} install gpgsm -y"
 
 		if [ ${general_sistema} = 0 ]; then
 			sudo cp ./Grafico_temperaturas/grafico_temperaturas.sh /usr/local/bin/grafico_temperaturas.sh
@@ -811,7 +811,7 @@ EOS
 ## Funciones 20: configurador_locales
 function configurador_locales {
 	if [ ${general_sistema} != 0 ]; then
-		sudo ${gestor_paquetes} install manpages-es manpages-es-extra -y
+		"sudo ${gestor_paquetes} install manpages-es manpages-es-extra -y"
 		sudo dpkg-reconfigure locales
 		export LANG=es_ES.UTF-8
 	fi
@@ -834,7 +834,7 @@ function instalador_kde {
 			if [ "${kde_kde}" = 's' ]; then
 				echo 'Instalando KDE...'
 
-				sudo ${gestor_paquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen xorg -y
+				"sudo ${gestor_paquetes} install kde-plasma-desktop kde-l10n-es kwin-x11 systemsettings kscreen xorg -y"
 
 				# Componente gráfico del cortafuegos, instalable en el caso de tener KDE
 				if [ "${cortafuegos_cortafuegos}" != 'n' ]; then
