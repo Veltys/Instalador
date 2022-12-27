@@ -1,8 +1,8 @@
-# Title         : main.yml
+# Title         : tester.yml
 # Description   : Configura GitHub Actions para realizar los tests de integración
 # Author        : Veltys
 # Date          : 2022-12-21
-# Version       : 1.2.1
+# Version       : 1.2.2
 # Usage         : (usado externamente)
 # Notes         : 
 
@@ -14,6 +14,10 @@ on:
     branches:
       - testing
 
+  pull_request:
+    branches:
+      - testing
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
-      - name: "Tester"
+      - name: "Test"
         shell: bash
         env:
           CLAVES_SSH_URL:	${{ secrets.CLAVES_SSH_URL }}
